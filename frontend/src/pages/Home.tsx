@@ -11,7 +11,7 @@ const Home = () => {
     );
   };
   return (
-    <div className="home px-5 max-w-6xl w-full flex flex-col gap-5 text-white">
+    <div className="home px-5 max-w-6xl w-full flex flex-col gap-5 text-white font-macond">
       <img src={banner} alt="" className="rounded-md mt-5" />
       <div className="now-showing mt-5 flex flex-col">
         <div className="flex flex-row flex-wrap items-center justify-between">
