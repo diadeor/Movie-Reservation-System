@@ -4,8 +4,18 @@ import { PORT } from "./config/env.js";
 import prisma from "./config/db.js";
 import userRouter from "./routes/users.route.js";
 import movieRouter from "./routes/movies.route.js";
+import cors from "cors";
 
 const app = express();
+
+// cors
+app.use(
+  cors({
+    origin: ["https://web-chat-virid-two.vercel.app", "http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  }),
+);
 
 // Middlewares
 app.use(urlencoded({ extended: false }));

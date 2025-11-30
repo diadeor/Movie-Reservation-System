@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Users from "./Admin/Users";
 import Movies from "./Admin/Movies";
@@ -56,7 +56,10 @@ const Admin = () => {
                       <CirclePlus />
                     </button>
                   </div>
-                  <el.content />
+
+                  <ul className="flex flex-col gap-2 font-poppins">
+                    <el.content />
+                  </ul>
                 </div>
               </TabsContent>
             );

@@ -1,25 +1,35 @@
 import { useState } from "react";
-import { FaBarsStaggered, FaRegUser, FaXmark } from "react-icons/fa6";
-import { IoFilmOutline, IoHomeOutline, IoPaperPlaneOutline } from "react-icons/io5";
+import { FaBarsStaggered, FaRegUser } from "react-icons/fa6";
+import { House, Clapperboard, Phone, X } from "lucide-react";
 
 import logo from "../assets/sg_colored.svg";
-import type { IconType } from "react-icons";
 
 const Menu = () => {
-  const MenuItem = ({ title, Icon }: { title: string; Icon: IconType }) => {
-    return (
-      <li className="flex flex-row items-center gap-2">
-        <Icon />
-        {title}
-      </li>
-    );
-  };
+  const menus = [
+    {
+      title: "Home",
+      icon: House,
+    },
+    {
+      title: "Movie",
+      icon: Clapperboard,
+    },
+    {
+      title: "Contact Us",
+      icon: Phone,
+    },
+  ];
 
   return (
     <>
-      <MenuItem title="Home" Icon={IoHomeOutline} />
-      <MenuItem title="Movie" Icon={IoFilmOutline} />
-      <MenuItem title="Contact Us" Icon={IoPaperPlaneOutline} />
+      {menus.map((el, index) => {
+        return (
+          <li className="flex flex-row items-center gap-2" key={index}>
+            <el.icon size={`20px`} />
+            <span className="">{el.title}</span>
+          </li>
+        );
+      })}
     </>
   );
 };
@@ -43,7 +53,7 @@ const NavBar = () => {
             menuIsOpen ? "flex" : "hidden"
           } flex-col items-center justify-center`}
         >
-          <FaXmark
+          <X
             className="absolute top-5 left-5 cursor-pointer transition hover:scale-105 "
             size={`2em`}
             onClick={toggleMenu}
