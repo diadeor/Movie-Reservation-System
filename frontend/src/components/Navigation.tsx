@@ -32,7 +32,7 @@ const NavBar = () => {
 
   return (
     <nav className="flex flex-row px-5 py-2 bg-blue-800/20 border-b-2 border-white/30 text-white w-full justify-center ">
-      <div className="inner-men flex flex-row items-center justify-between w-full max-w-6xl">
+      <div className="inner-menu flex flex-row items-center justify-between w-full max-w-6xl">
         <FaBarsStaggered
           size={`1.5em`}
           onClick={toggleMenu}
