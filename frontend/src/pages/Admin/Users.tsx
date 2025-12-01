@@ -10,11 +10,11 @@ type User = {
 const Users = () => {
   const [users, setUsers] = useState<User[]>();
   const url = "http://localhost:5000/api/users";
-  const getUsers = useFetch(url);
+  const getUsers = useFetch();
 
   useEffect(() => {
     (async () => {
-      const { data } = await getUsers();
+      const { data } = await getUsers(url);
       setUsers(data.users);
     })();
   }, []);

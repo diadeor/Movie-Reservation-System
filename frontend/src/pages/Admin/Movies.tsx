@@ -1,4 +1,4 @@
-import { DialogDemo } from "@/components/Admin/AddMovies";
+import AddMovie from "@/components/Admin/AddMovies";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
