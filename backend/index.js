@@ -5,6 +5,7 @@ import prisma from "./config/db.js";
 import userRouter from "./routes/users.route.js";
 import movieRouter from "./routes/movies.route.js";
 import cors from "cors";
+import showRouter from "./routes/shows.route.js";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.get("/", (req, res, next) => {
 });
 app.use("/api/users", userRouter);
 app.use("/api/movies", movieRouter);
+app.use("/api/shows", showRouter);
 
 app.listen(PORT, async () => {
   console.log("Listening on port", PORT);

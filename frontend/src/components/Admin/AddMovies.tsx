@@ -10,10 +10,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { Input } from "@/components/ui/input";
 import useFetch from "@/hooks/useFetch";
 import { useRef, useState } from "react";
+import usePost from "@/hooks/usePost";
 
 type MovieFetch = {
   Title: string;
@@ -28,22 +38,42 @@ const AddMovie = () => {
   const searchMovies = useFetch();
   const [movieList, setMovieList] = useState<MovieFetch[]>();
   const [selected, setSelected] = useState<MovieFetch>();
+  const addMovieUrl = `http://localhost:5000/api/movies/add`;
+  const addMovieReq = usePost(addMovieUrl);
+  const [language, setLanguage] = useState<string>("english");
+  const [message, setMessage] = useState("Not searched yet !!");
 
   const searchMovie = async () => {
+    setMessage("Searching...");
     if (!input.current) return;
     const searchString = input.current.value;
     const search = searchString.split(" ").join("+");
     const url = `https://www.omdbapi.com/?apikey=${apiKey}&type=movie&s=${search}`;
     try {
       const { data, error } = await searchMovies(url);
+      console.log({ data, search, error });
       if (!error) {
         setMovieList(data.Search);
+      } else {
+        setMessage(error);
+        setMovieList(undefined);
       }
     } catch (err) {
       console.log(err);
     }
   };
-  const addMovie = async () => {};
+  const addMovie = async () => {
+    try {
+      const { data } = await addMovieReq({ imdbID: selected?.imdbID, language });
+      if (data.success) {
+        setMovieList(undefined);
+        setMessage(data.message);
+      }
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -64,16 +94,16 @@ const AddMovie = () => {
               Search
             </Button>
           </div>
-          <div className="show-movies font-poppins rounded-md h-100 items-center justify-center flex flex-col overflow-hidden">
-            {!movieList && <p className="font-semibold">Not searched yet</p>}
-            <ul className="flex flex-row gap-2 w-full h-full overflow-auto">
+          <div className=" gap-3 show-movies font-poppins rounded-md h-80 items-center justify-center flex flex-col overflow-hidden">
+            {!movieList && <p className="font-semibold">{message}</p>}
+            <ul className="flex flex-row gap-1 w-full h-full overflow-auto">
               {movieList &&
                 movieList.map((el, index) => {
                   return (
                     <li
                       key={index}
                       onClick={() => setSelected(el)}
-                      className="relative w-60 aspect-square flex flex-col items-center"
+                      className="relative w-44 aspect-square flex flex-col items-center"
                     >
                       {selected?.imdbID === el.imdbID && (
                         <CircleCheck fill="blue" className="absolute top-2 left-2 text-white" />
@@ -87,13 +117,26 @@ const AddMovie = () => {
                   );
                 })}
             </ul>
+            <Select onValueChange={setLanguage} defaultValue={language}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a language" />
+              </SelectTrigger>
+              <SelectContent defaultValue="english">
+                <SelectGroup>
+                  <SelectLabel>Language</SelectLabel>
+                  <SelectItem value="english">English</SelectItem>
+                  <SelectItem value="hindi">Hindi</SelectItem>
+                  <SelectItem value="nepali">Nepali</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button type="submit" onClick={addMovie} disabled={selected ? false : true}>
+          <Button type="submit" onClick={addMovie} disabled={selected && language ? false : true}>
             {selected ? `Add ${selected?.Title} (${selected?.Year})` : "Select a movie to add"}
           </Button>
         </DialogFooter>

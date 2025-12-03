@@ -22,6 +22,30 @@
 .font-jetbrains {
   font-family: "Jetbrains Mono";
 }
+.styled-scrollbar {
+  overflow-y: auto;
+}
+
+/* Width of the scrollbar */
+.styled-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track (background) */
+.styled-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle (the moving part) */
+.styled-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent grey */
+  border-radius: 10px; /* Rounded edges */
+}
+
+/* Handle on hover */
+.styled-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

@@ -21,51 +21,80 @@ model Users {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Movies {
-  id         Int      @id(map: "Movie_pkey") @default(autoincrement())
+  id         Int            @id(map: "Movie_pkey") @default(autoincrement())
   title      String
-  year       Int      @db.SmallInt
+  year       Int            @db.SmallInt
   rated      String
   released   String
-  genre      String[]
-  cast       String[]
+  genre      String
+  cast       String
   director   String
-  runtime    Int      @db.SmallInt
+  runtime    String
   plot       String
-  language   String
+  language   movie_language @default(english)
   poster     String
-  status     String
-  created_at DateTime @default(now()) @db.Timestamptz(6)
+  status     movie_status   @default(active)
+  created_at DateTime       @default(now()) @db.Timestamptz(6)
+  imdbID     String         @unique
   Shows      Shows[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Shows {
   id              Int       @id @default(autoincrement())
-  movie           Int
-  date            DateTime  @db.Date
-  time            DateTime  @db.Time(6)
-  status          String
+  movie_id        Int
+  date            String
+  time            String
+  status          String    @default("upcoming")
   available_seats String[]
   sold_seats      String[]
   created_at      DateTime  @default(now()) @db.Timestamptz(6)
   price           Int       @db.SmallInt
-  Movies          Movies    @relation(fields: [movie], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  movie_poster    String?
+  movie_title     String?
+  Movies          Movies    @relation(fields: [movie_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Shows_movie_fkey")
   Tickets         Tickets[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Tickets {
-  id              Int      @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   show            Int
   user            Int
   seats           String[]
-  number_of_seats Int      @db.SmallInt
-  seat_price      Int      @db.SmallInt
-  discount        Int?     @default(0) @db.SmallInt
-  total           Int      @default(dbgenerated("(number_of_seats * seat_price)"))
-  grand_total     Int      @default(dbgenerated("((number_of_seats * seat_price) - COALESCE((discount)::integer, 0))"))
-  status          String
+  number_of_seats Int           @db.SmallInt
+  seat_price      Int           @db.SmallInt
+  discount        Int?          @default(0) @db.SmallInt
+  total           Int           @default(dbgenerated("(number_of_seats * seat_price)"))
+  grand_total     Int           @default(dbgenerated("((number_of_seats * seat_price) - COALESCE((discount)::integer, 0))"))
+  status          ticket_status @default(unpaid)
   payment         String
-  Shows           Shows    @relation(fields: [show], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Users           Users    @relation(fields: [user], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Shows           Shows         @relation(fields: [show], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Users           Users         @relation(fields: [user], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum movie_language {
+  english
+  nepali
+  hindi
+}
+
+enum movie_status {
+  active
+  inactive
+}
+
+enum show_status {
+  upcoming
+  expired
+  cancelled
+}
+
+enum ticket_status {
+  unpaid
+  paid
+  refunded
+  cancelled
+  attended
+  absent
 }

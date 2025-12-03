@@ -6,6 +6,7 @@ import Movies from "./Admin/Movies";
 import Shows from "./Admin/Shows";
 import Tickets from "./Admin/Tickets";
 import { Clapperboard, Popcorn, Tickets as TicketIcon, UsersRound } from "lucide-react";
+import AddShow from "@/components/Admin/AddShows";
 
 const Admin = () => {
   const tabs = [
@@ -30,6 +31,7 @@ const Admin = () => {
       content: Tickets,
     },
   ];
+
   return (
     <div className="flex admin-container w-full h-[calc(100svh-70px)] p-5 font-poppins max-w-6xl">
       <Tabs defaultValue="users" className="items-center h-full w-full">
@@ -42,20 +44,21 @@ const Admin = () => {
             );
           })}
         </TabsList>
-        <div className="tab-content w-full h-full flex text-white">
+        <div className="tab-content w-full h-full flex text-white overflow-hidden z-0">
           {tabs.map((el, index) => {
             return (
-              <TabsContent value={el.title.toLowerCase()} key={index}>
-                <div className="tab-admin flex flex-col h-full w-full p-2 px-3 rounded-md bg-blue-800 font-poppins">
+              <TabsContent value={el.title.toLowerCase()} key={index} className="z-0">
+                <div className="relative tab-admin flex flex-col h-full w-full p-2 px-3 rounded-md bg-blue-800 font-poppins">
                   <div className="top min-h-10 mb-2 items-center font-macondo flex flex-row justify-between">
                     <p className="title flex flex-row gap-2 items-center uppercase tracking-wider text-xl font-bold">
                       <el.icon />
                       {el.title}
                     </p>
-                    <AddMovie />
+                    {el.title === "Movies" && <AddMovie />}
+                    {el.title === "Shows" && <AddShow />}
                   </div>
 
-                  <ul className="flex flex-col gap-2 font-poppins">
+                  <ul className="flex flex-col gap-2 font-poppins overflow-auto h-full styled-scrollbar">
                     <el.content />
                   </ul>
                 </div>

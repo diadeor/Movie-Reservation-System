@@ -1,8 +1,84 @@
+import { useState, useEffect } from "react";
+import useFetch from "@/hooks/useFetch";
+type Show = {
+  movie_id: number;
+  movie_poster: string;
+  date: string;
+  time: string;
+  price: number;
+  movie_title: string;
+  status: string;
+  available_seats: string[];
+  sold_seats: string[];
+};
+
 const Shows = () => {
+  const showFetchUrl = "http://localhost:5000/api/shows";
+  const [shows, setShows] = useState<Show[]>();
+  const showFetchReq = useFetch();
+
+  useEffect(() => {
+    const fetchShows = async () => {
+      try {
+        const { data } = await showFetchReq(showFetchUrl);
+        if (data.success) {
+          setShows(data.shows);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchShows();
+  }, []);
   return (
-    <div className="user-tab-admin">
-      <p>hi there how are you doing ?</p>
-    </div>
+    shows &&
+    shows.map((show, index) => {
+      const {
+        movie_title,
+        movie_id,
+        available_seats,
+        sold_seats,
+        status,
+        date,
+        time,
+        price,
+        movie_poster,
+      } = show;
+      const filled = ((sold_seats.length / 10) * 100).toFixed(0);
+
+      return (
+        <li className="bg-white/20 p-3 rounded-md flex flex-row gap-3 font-poppins" key={index}>
+          <div className="first-column">
+            <img src={movie_poster} alt="" className="min-w-20 w-20 rounded-md" />
+          </div>
+          <div className="mid flex flex-col w-full">
+            <p className="title font-semibold text-lg text-lime-500">{movie_title}</p>
+            <div className="two flex flex-row gap-2 w-full font-jetbrains">
+              <p className="direct flex flex-col bg-white/20 p-2 grow  rounded-md flex-1">
+                <span className="text-lime-500 ">Date</span>{" "}
+                <span className="font-bold text-nowrap">{date}</span>
+              </p>
+              <p className="direct flex flex-col bg-white/20 p-2 grow rounded-md flex-1">
+                <span className="text-lime-500">Time</span>{" "}
+                <span className="font-bold">{time.slice(0, 5)}</span>
+              </p>
+              <p className="direct flex flex-col bg-white/20 p-2 grow rounded-md flex-1">
+                <span className="text-lime-500">Price</span>{" "}
+                <span className="font-bold">Rs.{price}</span>
+              </p>
+            </div>
+            <div className="flex flex-row gap-2 w-full">
+              <p className="status flex-1 bg-white/20 p-2 mt-2 rounded-md font-bold font-jetbrains uppercase">
+                {status}
+              </p>
+              <p className="status flex-1 bg-white/20 p-2 mt-2 rounded-md font-bold font-jetbrains uppercase">
+                {filled}% filled
+              </p>
+            </div>
+          </div>
+        </li>
+      );
+    })
   );
 };
 

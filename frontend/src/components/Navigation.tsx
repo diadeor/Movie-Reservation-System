@@ -49,7 +49,7 @@ const NavBar = () => {
           className="cursor-pointer transition hover:scale-105 sm:hidden"
         />
         <div
-          className={`full-menu w-full h-svh absolute top-0 left-0 bg-blue-900 ${
+          className={`z-10 full-menu w-full h-svh absolute top-0 left-0 bg-blue-900 ${
             menuIsOpen ? "flex" : "hidden"
           } flex-col items-center justify-center`}
         >
