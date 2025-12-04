@@ -4,6 +4,7 @@ import Admin from "./pages/Admin";
 import Home from "./pages/Home";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ShowMovie from "./pages/ShowMovie";
+import BookShow from "./pages/BookShow";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/movie/:id" element={<ShowMovie />} />
+          <Route path="/shows/:id" element={<BookShow />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
         <Footer />

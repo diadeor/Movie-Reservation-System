@@ -1,15 +1,8 @@
 import banner from "@/assets/banner.png";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useShowContext } from "@/contexts/ShowsContext";
+import { useShowContext, type Movie } from "@/contexts/ShowsContext";
 import DateComponent, { dates } from "@/components/Dates";
-
-type Movie = {
-  id: number;
-  title: string;
-  poster: string;
-  runtime: string;
-};
 
 const Home = () => {
   const { movies } = useShowContext();

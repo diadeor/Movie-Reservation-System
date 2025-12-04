@@ -5,7 +5,8 @@ export const ShowContext: any = createContext("");
 
 export const useShowContext: any = () => useContext(ShowContext);
 
-type Movie = {
+export type Movie = {
+  id: number;
   title: string;
   poster: string;
   cast: string;
@@ -17,7 +18,14 @@ type Movie = {
   director: string;
   released: string;
 };
-type Show = { id: number; date: string; time: string };
+export type Show = {
+  id: number;
+  date: string;
+  time: string;
+  movie_id: number;
+  price: number;
+  available_seats: string[];
+};
 
 const ShowProvider = ({ children }: { children: ReactElement }) => {
   const [shows, setShows] = useState<Show[]>();

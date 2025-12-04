@@ -1,22 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import DateComponent, { dates } from "@/components/Dates";
-import { useShowContext } from "@/contexts/ShowsContext";
-
-type Movie = {
-  id: number;
-  title: string;
-  poster: string;
-  cast: string;
-  genre: string;
-  language: string;
-  plot: string;
-  runtime: string;
-  year: string;
-  director: string;
-  released: string;
-};
-type Show = { id: number; date: string; time: string; movie_id: number };
+import { useShowContext, type Movie, type Show } from "@/contexts/ShowsContext";
 
 const ShowMovie = () => {
   const { id } = useParams();
