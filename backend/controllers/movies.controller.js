@@ -36,7 +36,7 @@ export const getActiveMovies = async (req, res, next) => {
 export const getMovie = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const movie = await prisma.movies.findUnique({ where: { id } });
+    const movie = await prisma.movies.findUnique({ where: { id: +id } });
 
     res.json({
       success: true,

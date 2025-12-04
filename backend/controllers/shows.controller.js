@@ -27,6 +27,20 @@ export const getShow = async (req, res, next) => {
     next(error);
   }
 };
+export const getShowByMovie = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const shows = await prisma.shows.findMany({ where: { movie_id: +id } });
+
+    res.json({
+      success: true,
+      shows,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const addShow = async (req, res, next) => {
   try {

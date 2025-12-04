@@ -1,7 +1,9 @@
+import Footer from "./components/Footer";
 import NavBar from "./components/Navigation";
 import Admin from "./pages/Admin";
 import Home from "./pages/Home";
-import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import ShowMovie from "./pages/ShowMovie";
 
 function App() {
   return (
@@ -10,8 +12,10 @@ function App() {
         <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/movie/:id" element={<ShowMovie />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
+        <Footer />
       </div>
     </Router>
   );
