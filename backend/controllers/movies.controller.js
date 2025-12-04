@@ -23,6 +23,11 @@ export const getActiveMovies = async (req, res, next) => {
         title: true,
         poster: true,
         runtime: true,
+        director: true,
+        cast: true,
+        released: true,
+        plot: true,
+        genre: true,
       },
     });
     res.json({
