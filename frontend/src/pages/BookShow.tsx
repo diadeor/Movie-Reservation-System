@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useShowContext, type Movie, type Show } from "@/contexts/ShowsContext";
 import { CircleDollarSign } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 const BookShow = () => {
   const { id } = useParams();
@@ -113,7 +113,7 @@ const BookShow = () => {
                       ? isSelected
                         ? "bg-yellow-500 hover:bg-yellow-500/80"
                         : ""
-                      : "bg-red-800 text-whit "
+                      : "bg-red-800 text-white "
                   }`}
                   onClick={() => addSeat(seat)}
                   key={index}
@@ -127,9 +127,10 @@ const BookShow = () => {
         )}
         <hr className="border w-full border-white/40 rounded-full" />
 
-        <div className="info text-black flex flex-row gap-2 text-center font-semibold uppercase tracking-wider">
+        <div className="info text-black grid grid-cols-2 flex-wrap gap-2 text-center font-semibold uppercase tracking-wider">
           <p className="bg-white p-2 flex-1 rounded-full">Available</p>
-          <p className="bg-red-800 text-white p-2 flex-1  rounded-full ">Sold</p>
+          <p className="bg-red-800 text-white p-2 flex-1  rounded-full">Sold</p>
+          <p className="bg-green-600 text-white p-2 flex-1  rounded-full ">Reserved</p>
           <p className="bg-yellow-500 p-2 flex-1  rounded-full">Your Seat</p>
         </div>
       </div>
@@ -138,9 +139,11 @@ const BookShow = () => {
           <p className="total font-jetbrains font-bold text-xl">
             Rs.{show.price * selectedSeats.length}
           </p>
-          <Button variant={"secondary"} className=" border-2">
-            Pay Now <CircleDollarSign />
-          </Button>
+          <Link to={`/tickets`}>
+            <Button variant={"secondary"} className=" border-2">
+              Pay Now <CircleDollarSign />
+            </Button>
+          </Link>
         </div>
       )}
     </div>

@@ -25,6 +25,7 @@ export type Show = {
   movie_id: number;
   price: number;
   available_seats: string[];
+  reserved_seats: string[];
 };
 
 const ShowProvider = ({ children }: { children: ReactElement }) => {

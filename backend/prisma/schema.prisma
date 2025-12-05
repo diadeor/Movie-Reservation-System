@@ -47,11 +47,9 @@ model Shows {
   time            String
   status          String    @default("upcoming")
   available_seats String[]
-  sold_seats      String[]
+  reserved_seats  String[]
   created_at      DateTime  @default(now()) @db.Timestamptz(6)
   price           Int       @db.SmallInt
-  movie_poster    String?
-  movie_title     String?
   Movies          Movies    @relation(fields: [movie_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Shows_movie_fkey")
   Tickets         Tickets[]
 }
