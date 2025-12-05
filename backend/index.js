@@ -6,6 +6,9 @@ import userRouter from "./routes/users.route.js";
 import movieRouter from "./routes/movies.route.js";
 import cors from "cors";
 import showRouter from "./routes/shows.route.js";
+import authRouter from "./routes/auth.routes.js";
+import ErrorMiddleware from "./middlewares/error.middleware.js";
+import authorizeUser from "./middlewares/auth.middleware.js";
 
 const app = express();
 
@@ -27,9 +30,13 @@ app.use(cookieParser());
 app.get("/", (req, res, next) => {
   res.send("hi there");
 });
-app.use("/api/users", userRouter);
+app.use("/api/users", authorizeUser, userRouter);
 app.use("/api/movies", movieRouter);
 app.use("/api/shows", showRouter);
+app.use("/api/auth", authRouter);
+
+// Error middleware
+app.use(ErrorMiddleware);
 
 app.listen(PORT, async () => {
   console.log("Listening on port", PORT);
