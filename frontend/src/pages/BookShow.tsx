@@ -1,11 +1,15 @@
 import { Button } from "@/components/ui/button";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { useShowContext, type Movie, type Show } from "@/contexts/ShowsContext";
 import { CircleDollarSign } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import usePost from "@/hooks/usePost";
 
 const BookShow = () => {
   const { id } = useParams();
+  const { user } = useAuthContext();
+  const nav = useNavigate();
   const showId = id ? +id : 0;
   const { movies, shows } = useShowContext();
   const [show, setShow] = useState<Show>();
@@ -63,11 +67,16 @@ const BookShow = () => {
     "e10",
   ];
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+  const ticketUrl = "http://localhost:5000/api/tickets/create";
+  const ticketReq = usePost(ticketUrl);
+
+  useEffect(() => {
+    !user && nav("/login");
+  }, []);
 
   useEffect(() => {
     if (shows && movies) {
       const selectedShow = shows.find((show: Show) => show.id === showId);
-      console.log(selectedShow);
       setShow(selectedShow);
       setMovie(movies.find((movie: Movie) => movie.id === selectedShow.movie_id));
     }
@@ -80,73 +89,86 @@ const BookShow = () => {
     }
   };
 
+  const handlePayNow = async () => {
+    try {
+      if (!show && !movie) return;
+      const { data, error } = await ticketReq({ seats: selectedSeats, show: show?.id });
+      console.log(data, error);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
-    <div className="flex flex-col items-center gap-5 w-full h-full">
-      <p className=" text-xl text-white font-semibold font-macondo tracking-widest uppercase">
-        Book your seats
-      </p>
-      {movie && (
-        <div className="show-details flex flex-row w-full max-w-150 bg-white/20 p-3 rounded-md gap-3 text-white">
-          <img src={movie.poster} alt={movie.title} className="w-20 rounded-md h-full" />
-          <div className="right-show font-bold flex flex-col w-full gap-1">
-            <p className="text-lg bg-white/20 p-1 px-3 flex-1 rounded-sm">{movie.title}</p>
-            <p className=" bg-white/20 p-1 px-3 flex-1 rounded-sm">{movie.runtime}</p>
-            <p className=" bg-white/20 p-1 px-3 flex-1 rounded-sm">{show?.time}</p>
-          </div>
-        </div>
-      )}
-      <hr className="border w-full border-white/40 rounded-full max-w-220" />
-      <div className="seats-container flex flex-col gap-5 max-w-220 w-full">
-        <p className="screen border-3 border-white/50 w-full h-40 grow rounded-md bg-white/20 flex items-center justify-center text-white uppercase tracking-wider font-bold">
-          Screen
+    user && (
+      <div className="flex flex-col items-center gap-5 w-full h-full">
+        <p className=" text-xl text-white font-semibold font-macondo tracking-widest uppercase">
+          Book your seats
         </p>
-        {show && (
-          <div className="seats grid grid-cols-10 w-full overflow-x-auto gap-1 text-white">
-            {totalSeats.map((seat, index) => {
-              const isAvailable = show.available_seats.includes(seat);
-              const isSelected = selectedSeats.includes(seat);
-              return (
-                <Button
-                  variant="secondary"
-                  className={`uppercase ${
-                    isAvailable
-                      ? isSelected
-                        ? "bg-yellow-500 hover:bg-yellow-500/80"
-                        : ""
-                      : "bg-red-800 text-white "
-                  }`}
-                  onClick={() => addSeat(seat)}
-                  key={index}
-                  disabled={isAvailable ? false : true}
-                >
-                  {seat}
-                </Button>
-              );
-            })}
+        {movie && (
+          <div className="show-details flex flex-row w-full max-w-150 bg-white/20 p-3 rounded-md gap-3 text-white">
+            <img src={movie.poster} alt={movie.title} className="w-20 rounded-md h-full" />
+            <div className="right-show font-bold flex flex-col w-full gap-1">
+              <p className="text-lg bg-white/20 p-1 px-3 flex-1 rounded-sm">{movie.title}</p>
+              <p className=" bg-white/20 p-1 px-3 flex-1 rounded-sm">{movie.runtime}</p>
+              <p className=" bg-white/20 p-1 px-3 flex-1 rounded-sm">{show?.time}</p>
+            </div>
           </div>
         )}
-        <hr className="border w-full border-white/40 rounded-full" />
-
-        <div className="info text-black grid grid-cols-2 flex-wrap gap-2 text-center font-semibold uppercase tracking-wider">
-          <p className="bg-white p-2 flex-1 rounded-full">Available</p>
-          <p className="bg-red-800 text-white p-2 flex-1  rounded-full">Sold</p>
-          <p className="bg-green-600 text-white p-2 flex-1  rounded-full ">Reserved</p>
-          <p className="bg-yellow-500 p-2 flex-1  rounded-full">Your Seat</p>
-        </div>
-      </div>
-      {show && (
-        <div className="bottom absolute bottom-5 bg-blue-500 w-9/10 max-w-220 p-5 text-white flex-row flex items-center justify-between rounded-xl">
-          <p className="total font-jetbrains font-bold text-xl">
-            Rs.{show.price * selectedSeats.length}
+        <hr className="border w-full border-white/40 rounded-full max-w-220" />
+        <div className="seats-container flex flex-col gap-5 max-w-220 w-full">
+          <p className="screen border-3 border-white/50 w-full h-40 grow rounded-md bg-white/20 flex items-center justify-center text-white uppercase tracking-wider font-bold">
+            Screen
           </p>
-          <Link to={`/tickets`}>
-            <Button variant={"secondary"} className=" border-2">
+          {show && (
+            <div className="seats grid grid-cols-10 w-full overflow-x-auto gap-1 text-white">
+              {totalSeats.map((seat, index) => {
+                const isAvailable = show.available_seats.includes(seat);
+                const isSelected = selectedSeats.includes(seat);
+                const isReserved = show.reserved_seats.includes(seat);
+                const bg = () => {
+                  if (isAvailable) {
+                    if (isSelected) return "bg-yellow-500 hover:bg-yellow-500/80";
+                  } else if (isReserved) {
+                    return "bg-green-600 text-white";
+                  } else {
+                    return "bg-red-800 text-white";
+                  }
+                };
+                return (
+                  <Button
+                    variant="secondary"
+                    className={`uppercase ${bg()}`}
+                    onClick={() => addSeat(seat)}
+                    key={index}
+                    disabled={isAvailable ? false : true}
+                  >
+                    {seat}
+                  </Button>
+                );
+              })}
+            </div>
+          )}
+          <hr className="border w-full border-white/40 rounded-full" />
+
+          <div className="info text-black grid grid-cols-2 flex-wrap gap-2 text-center font-semibold uppercase tracking-wider">
+            <p className="bg-white p-2 flex-1 rounded-full">Available</p>
+            <p className="bg-red-800 text-white p-2 flex-1  rounded-full">Sold</p>
+            <p className="bg-green-600 text-white p-2 flex-1  rounded-full ">Reserved</p>
+            <p className="bg-yellow-500 p-2 flex-1  rounded-full">Your Seat</p>
+          </div>
+        </div>
+        {show && (
+          <div className="bottom absolute bottom-5 bg-blue-500 w-9/10 max-w-220 p-5 text-white flex-row flex items-center justify-between rounded-xl">
+            <p className="total font-jetbrains font-bold text-xl">
+              Rs.{show.price * selectedSeats.length}
+            </p>
+            <Button variant={"secondary"} className=" border-2" onClick={handlePayNow}>
               Pay Now <CircleDollarSign />
             </Button>
-          </Link>
-        </div>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
+    )
   );
 };
 

@@ -9,6 +9,7 @@ import showRouter from "./routes/shows.route.js";
 import authRouter from "./routes/auth.routes.js";
 import ErrorMiddleware from "./middlewares/error.middleware.js";
 import authorizeUser from "./middlewares/auth.middleware.js";
+import ticketRouter from "./routes/tickets.route.js";
 
 const app = express();
 
@@ -28,12 +29,13 @@ app.use(cookieParser());
 
 // Routes
 app.get("/", (req, res, next) => {
-  res.send("hi there");
+  res.send("You got the endpoint");
 });
 app.use("/api/users", authorizeUser, userRouter);
 app.use("/api/movies", movieRouter);
 app.use("/api/shows", showRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/tickets", authorizeUser, ticketRouter);
 
 // Error middleware
 app.use(ErrorMiddleware);
