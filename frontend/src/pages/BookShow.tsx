@@ -81,7 +81,7 @@ const BookShow = () => {
   };
 
   return (
-    <div className="show-book relative flex flex-col items-center bg-white/20 w-full max-w-6xl p-5 min-h-[calc(100svh-70px)] gap-5">
+    <div className="flex flex-col items-center gap-5 w-full h-full">
       <p className=" text-xl text-white font-semibold font-macondo tracking-widest uppercase">
         Book your seats
       </p>
@@ -95,7 +95,7 @@ const BookShow = () => {
           </div>
         </div>
       )}
-      <hr className="border w-full border-white/40 rounded-full" />
+      <hr className="border w-full border-white/40 rounded-full max-w-220" />
       <div className="seats-container flex flex-col gap-5 max-w-220 w-full">
         <p className="screen border-3 border-white/50 w-full h-40 grow rounded-md bg-white/20 flex items-center justify-center text-white uppercase tracking-wider font-bold">
           Screen
@@ -135,7 +135,7 @@ const BookShow = () => {
         </div>
       </div>
       {show && (
-        <div className="bottom absolute bottom-5 bg-blue-500 w-9/10 p-5 left-[calc(5%)] text-white flex-row flex items-center justify-between rounded-xl">
+        <div className="bottom absolute bottom-5 bg-blue-500 w-9/10 max-w-220 p-5 text-white flex-row flex items-center justify-between rounded-xl">
           <p className="total font-jetbrains font-bold text-xl">
             Rs.{show.price * selectedSeats.length}
           </p>

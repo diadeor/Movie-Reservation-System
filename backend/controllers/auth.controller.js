@@ -9,7 +9,7 @@ export const signIn = async (req, res, next) => {
     if (!email) throw new Error("Email is required...");
     if (!password) throw new Error("Password is required...");
 
-    const userExists = await prisma.users.findUnique({ where: email });
+    const userExists = await prisma.users.findUnique({ where: { email } });
     if (!userExists) throw new Error("User does not exist");
 
     const passValid = await bcrypt.compare(password, userExists.password);
@@ -38,6 +38,7 @@ export const signIn = async (req, res, next) => {
 export const signUp = async (req, res, next) => {
   try {
     const { name, email, password, role } = req.body;
+    console.log(req.body);
     const roles = ["user", "admin"];
     if (!name || !email || !password)
       throw new Error("Required fields are not provided. [name, email, password] is required");
@@ -59,7 +60,10 @@ export const signUp = async (req, res, next) => {
     };
     const newUser = await prisma.users.create({ data: user });
 
-    const token = jwt.sign({ id, role }, JWT_SECRET, { expiresIn: JWT_EXPIRE });
+    const id = newUser.id;
+    const token = jwt.sign({ id, role: newUser.role }, JWT_SECRET, {
+      expiresIn: JWT_EXPIRE,
+    });
     res.cookie("token", token, {
       secure: false,
       httpOnly: true,
@@ -72,7 +76,7 @@ export const signUp = async (req, res, next) => {
       message: "New user created",
       user: {
         token,
-        id: newUser.id,
+        id,
         name,
         email,
         role: newUser.role,

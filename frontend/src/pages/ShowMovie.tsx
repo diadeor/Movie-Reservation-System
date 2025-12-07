@@ -45,7 +45,7 @@ const ShowMovie = () => {
   }, [selectedDate, shows]);
   return (
     movie && (
-      <div className="movie-container p-10 flex flex-col gap-5 text-white bg-white/20 max-w-6xl">
+      <>
         <div className="movie-details flex flex-row flex-wrap justify-center gap-5 overflow-hidden">
           <img src={movie.poster} alt="" className="rounded-3xl flex-1 w-full max-w-60 h-full" />
           <div className="right font-poppins flex-1 min-w-70 w-full">
@@ -99,7 +99,7 @@ const ShowMovie = () => {
             </p>
           )}
         </ul>
-      </div>
+      </>
     )
   );
 };

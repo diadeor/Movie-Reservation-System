@@ -14,9 +14,10 @@ export type Movie = {
   language: string;
   plot: string;
   runtime: string;
-  year: string;
+  year: number;
   director: string;
   released: string;
+  status: string;
 };
 export type Show = {
   id: number;
@@ -26,6 +27,7 @@ export type Show = {
   price: number;
   available_seats: string[];
   reserved_seats: string[];
+  status: string;
 };
 
 const ShowProvider = ({ children }: { children: ReactElement }) => {
@@ -46,7 +48,6 @@ const ShowProvider = ({ children }: { children: ReactElement }) => {
           error: err,
         } = await getRequest(`${baseUrl}/shows`);
 
-        console.log(movies);
         if (!error && movies) setMovies(movies);
         if (!err && shows) setShows(shows);
       } catch (error) {

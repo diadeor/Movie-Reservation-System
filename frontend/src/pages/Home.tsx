@@ -9,7 +9,7 @@ const Home = () => {
   const [selectedDate, setSelectedDate] = useState(dates[0].value);
 
   return (
-    <div className="home px-5 max-w-6xl w-full flex flex-col gap-5 text-white font-macondo">
+    <>
       <img src={banner} alt="" className="rounded-md mt-5" />
       <div className="now-showing mt-5 flex flex-col">
         <div className="flex flex-row flex-wrap items-center justify-between mb-5">
@@ -37,7 +37,7 @@ const Home = () => {
             })}
         </ul>
       </div>
-    </div>
+    </>
   );
 };
 

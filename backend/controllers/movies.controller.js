@@ -51,6 +51,21 @@ export const getMovie = async (req, res, next) => {
     next(error);
   }
 };
+export const updateStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const okay = req.query;
+    console.log({ okay, id });
+    const movie = await prisma.movies.findUnique({ where: { id: +id } });
+
+    res.json({
+      success: true,
+      movie,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export const getMoviesName = async (req, res, next) => {
   try {
     const movies = await prisma.movies.findMany({

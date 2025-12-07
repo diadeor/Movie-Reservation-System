@@ -45,9 +45,9 @@ export const getShowByMovie = async (req, res, next) => {
 export const addShow = async (req, res, next) => {
   try {
     const { show } = req.body;
-    const { date, time, price, status, available_seats, sold_seats, movie_id } = show;
+    const { date, time, price, status, available_seats, reserved_seats, movie_id } = show;
 
-    console.log(show);
+    console.log({ show });
     const alreadyExists = await prisma.shows.findFirst({
       where: {
         date,
@@ -59,15 +59,10 @@ export const addShow = async (req, res, next) => {
 
     const movieValid = await prisma.movies.findUniqueOrThrow({ where: { id: movie_id } });
 
-    console.log(movieValid);
-    const showUpdated = {
-      ...show,
-      movie_poster: movieValid.poster,
-      movie_title: movieValid.title,
-    };
+    console.log({ movieValid });
 
-    const newShow = await prisma.shows.create({ data: showUpdated });
-
+    const newShow = await prisma.shows.create({ data: show });
+    console.log({ newShow });
     res.json({
       success: true,
       message: "New show created",

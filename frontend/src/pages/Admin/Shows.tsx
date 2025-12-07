@@ -1,58 +1,26 @@
-import { useState, useEffect } from "react";
-import useFetch from "@/hooks/useFetch";
-type Show = {
-  movie_id: number;
-  movie_poster: string;
-  date: string;
-  time: string;
-  price: number;
-  movie_title: string;
-  status: string;
-  available_seats: string[];
-  sold_seats: string[];
-};
+import { type Show, type Movie, useShowContext } from "@/contexts/ShowsContext";
 
-const Shows = () => {
-  const showFetchUrl = "http://localhost:5000/api/shows";
-  const [shows, setShows] = useState<Show[]>();
-  const showFetchReq = useFetch();
+const Shows = ({ setTab }: { setTab?: any }) => {
+  const { shows, movies } = useShowContext();
 
-  useEffect(() => {
-    const fetchShows = async () => {
-      try {
-        const { data } = await showFetchReq(showFetchUrl);
-        if (data.success) {
-          setShows(data.shows);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchShows();
-  }, []);
   return (
     shows &&
-    shows.map((show, index) => {
-      const {
-        movie_title,
-        movie_id,
-        available_seats,
-        sold_seats,
-        status,
-        date,
-        time,
-        price,
-        movie_poster,
-      } = show;
-      const filled = ((sold_seats.length / 10) * 100).toFixed(0);
-
+    shows.map((show: Show, index: number) => {
+      const { movie_id, available_seats, status, date, time, price } = show;
+      const filled = (((50 - available_seats.length) / 50) * 100).toFixed(0);
+      const movie = movies.find((movie: Movie) => movie.id === movie_id);
+      const { title, poster } = movie;
       return (
-        <li className="bg-white/20 p-3 rounded-md flex flex-row gap-3 font-poppins" key={index}>
+        <li
+          className="bg-white/20 p-3 rounded-md flex flex-row gap-3 font-poppins"
+          key={index}
+          onClick={() => setTab("edit-show")}
+        >
           <div className="first-column">
-            <img src={movie_poster} alt="" className="min-w-20 w-20 rounded-md" />
+            <img src={poster} alt="" className="w-25 rounded-md" />
           </div>
           <div className="mid flex flex-col w-full">
-            <p className="title font-semibold text-lg text-lime-500">{movie_title}</p>
+            <p className="font-semibold text-lg">{title}</p>
             <div className="two flex flex-row gap-2 w-full font-jetbrains">
               <p className="direct flex flex-col bg-white/20 p-2 grow  rounded-md flex-1">
                 <span className="text-lime-500 ">Date</span>{" "}
