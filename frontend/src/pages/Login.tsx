@@ -1,23 +1,34 @@
 import { Button } from "@/components/ui/button";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import usePost from "@/hooks/usePost";
 import InputLabel from "@/components/InputLabel";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function Login() {
   const form = useRef<HTMLFormElement>(null);
+  const { user, setUser } = useAuthContext();
   const loginUrl = "http://localhost:5000/api/auth/sign-in";
   const loginReq = usePost(loginUrl);
+  const nav = useNavigate();
+
+  useEffect(() => {
+    user && nav("/admin");
+  }, [user]);
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
     if (!form.current) return;
     const formData = new FormData(form.current);
-    const { data, error } = await loginReq({
+    const creds = {
       email: formData.get("email"),
       password: formData.get("password"),
-    });
-    console.log(data, error);
+    };
+    const { data, error } = await loginReq(creds);
+    if (data && data.success && !error) {
+      setUser(data.user);
+      nav("/admin");
+    }
   };
   return (
     <div className="w-full max-w-md bg-white/30 p-5 rounded-lg flex flex-col font-poppins items-center">

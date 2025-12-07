@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { FaBarsStaggered, FaRegUser } from "react-icons/fa6";
-import { House, Clapperboard, Phone, X } from "lucide-react";
+import { House, Clapperboard, Phone, X, UserRound } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "../assets/sg_colored.svg";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 const Menu = () => {
   const menus = [
@@ -36,6 +37,7 @@ const Menu = () => {
 
 const NavBar = () => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const { user } = useAuthContext();
   const toggleMenu = () => {
     setMenuIsOpen((prev) => !prev);
   };
@@ -68,10 +70,15 @@ const NavBar = () => {
         <ul className="menu-items sm:flex flex-row gap-5 font-bold hidden  grow justify-center text-nowrap">
           <Menu />
         </ul>
-        <p className="p-3 px-4 bg-blue-600 rounded-sm cursor-pointer transition hover:scale-105 flex flex-row items-center gap-2 font-bold">
-          <FaRegUser size={`1em`} />
-          Login
-        </p>
+        {!user && (
+          <Link to={`/login`}>
+            <button className="p-3 px-4 bg-blue-600 rounded-sm cursor-pointer transition hover:scale-105 flex flex-row items-center gap-2 font-bold">
+              <FaRegUser size={`1em`} />
+              Login
+            </button>
+          </Link>
+        )}
+        {user && <UserRound size={`1.8em`} />}
       </div>
     </nav>
   );

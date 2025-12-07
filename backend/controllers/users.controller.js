@@ -50,7 +50,10 @@ export const getUser = async (req, res, next) => {
 export const getCurrentUser = async (req, res, next) => {
   try {
     const { id } = req.user;
-    const user = await prisma.users.findUnique({ where: { id: +id } });
+    const user = await prisma.users.findUnique({
+      where: { id: +id },
+      select: { id: true, name: true, email: true, role: true },
+    });
 
     res.json({
       success: true,

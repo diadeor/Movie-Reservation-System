@@ -35,7 +35,7 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState("users");
 
   return (
-    <div className="flex admin-container w-full h-[calc(100svh-70px)] p-5 font-poppins max-w-6xl">
+    <div className="flex admin-container w-full h-[calc(100svh-110px)] font-poppins max-w-6xl">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="items-center h-full w-full">
         <TabsList className="bg-blue-700">
           {tabs.map((tab, index) => {
