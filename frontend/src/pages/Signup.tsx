@@ -32,7 +32,7 @@ export default function SignUp() {
     }
   };
   return (
-    <div className="w-full max-w-md bg-white/30 p-5 rounded-lg flex flex-col font-poppins items-center">
+    <div className="w-full h-full p-5 flex flex-col font-poppins items-center justify-center">
       <p className="flex flex-col items-center font-bold">
         <span className="text-lg">SignUp to</span>{" "}
         <span className="text-2xl text-yellow-500">CineReserve</span>

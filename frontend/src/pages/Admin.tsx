@@ -35,9 +35,12 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState("users");
 
   return (
-    <div className="flex admin-container w-full h-[calc(100svh-110px)] font-poppins max-w-6xl">
+    <div className="flex flex-col items-center admin-container w-full h-[calc(100svh-110px)] font-poppins max-w-6xl text-orange-200">
+      <p className="text-2xl font-bold mb-5 bg-clip-text bg-linear-to-r text-transparent from-red-500 to-yellow-500">
+        Howdy, Admin
+      </p>
       <Tabs value={activeTab} onValueChange={setActiveTab} className="items-center h-full w-full">
-        <TabsList className="bg-blue-700">
+        <TabsList className="bg-orange-900">
           {tabs.map((tab, index) => {
             return (
               <TabsTrigger value={tab.title.toLowerCase()} key={index}>
@@ -50,7 +53,7 @@ const Admin = () => {
           {tabs.map((el, index) => {
             return (
               <TabsContent value={el.title.toLowerCase()} key={index} className="z-0">
-                <div className="relative tab-admin flex flex-col h-full w-full p-2 px-3 rounded-md bg-blue-800 font-poppins">
+                <div className="relative tab-admin flex flex-col h-full w-full p-2 px-3 rounded-md bg-orange-900 font-poppins">
                   <div className="top min-h-10 mb-2 items-center font-macondo flex flex-row justify-between">
                     <p className="title flex flex-row gap-2 items-center uppercase tracking-wider text-xl font-bold">
                       <el.icon />
@@ -59,6 +62,7 @@ const Admin = () => {
                     {el.title === "Movies" && <AddMovie />}
                     {el.title === "Shows" && <AddShow />}
                   </div>
+                  <hr className="border border-orange-800 rounded-full mb-2" />
                   <ul className="flex flex-col gap-2 font-poppins overflow-auto h-full styled-scrollbar">
                     <el.content setTab={setActiveTab} />
                   </ul>

@@ -43,12 +43,12 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="flex flex-row px-5 py-2 bg-blue-800/20 border-b-2 border-white/30 text-white w-full justify-center ">
+    <nav className="flex flex-row px-5 py-2 border-b border-orange-900 text-white w-full justify-center ">
       <div className="inner-menu flex flex-row items-center justify-between w-full max-w-6xl">
         <FaBarsStaggered
           size={`1.5em`}
           onClick={toggleMenu}
-          className="cursor-pointer transition hover:scale-105 sm:hidden"
+          className="cursor-pointer transition hover:scale-105 sm:hidden text-orange-700"
         />
         <div
           className={`z-10 full-menu w-full h-svh absolute top-0 left-0 bg-blue-900 ${
@@ -72,13 +72,17 @@ const NavBar = () => {
         </ul>
         {!user && (
           <Link to={`/login`}>
-            <button className="p-3 px-4 bg-blue-600 rounded-sm cursor-pointer transition hover:scale-105 flex flex-row items-center gap-2 font-bold">
+            <button className="p-2 px-4 bg-amber-600 rounded-sm cursor-pointer transition hover:scale-105 flex flex-row items-center gap-2 font-bold">
               <FaRegUser size={`1em`} />
               Login
             </button>
           </Link>
         )}
-        {user && <UserRound size={`1.8em`} />}
+        {user && (
+          <Link to={`/admin`}>
+            <UserRound size={`1.8em`} className="text-orange-700" />
+          </Link>
+        )}
       </div>
     </nav>
   );

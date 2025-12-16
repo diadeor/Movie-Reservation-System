@@ -36,18 +36,21 @@ export const dates = [
 const DateComponent = ({
   currentDate,
   setCurrentDate,
+  size,
 }: {
   currentDate: string;
   setCurrentDate: any;
+  size: "small" | "large";
 }) => {
+  const width = size === "large" ? "w-15 h-15 text-sm" : "w-12 h-12 text-xs";
   return (
     <ul className="date flex flex-row items-center justify-center gap-2">
       {dates.map((date, index) => {
         const { day, month, value } = date;
         return (
           <li
-            className={`cursor-pointer flex flex-col items-center justify-center bg-white/30 rounded-full w-15 h-15 border-2 text-sm font-jetbrains ${
-              currentDate === value ? "bg-white/70" : ""
+            className={`cursor-pointer flex flex-col items-center justify-center rounded-full ${width}  font-jetbrains ${
+              currentDate === value ? "bg-orange-700" : "bg-orange-900"
             }`}
             key={index}
             onClick={() => setCurrentDate(value)}

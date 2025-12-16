@@ -4,14 +4,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
-.main-container {
-  background-image: url(../src/assets/background.png);
+/* .main-container {
+  background-image: url(https://images.unsplash.com/photo-1470058869958-2a77ade41c02?auto=format&fit=crop&q=80);
   background-attachment: fixed;
   background-size: cover;
   background-repeat: no-repeat;
   background-color: rgba(0, 0, 0, 0.3);
   background-blend-mode: multiply;
-}
+} */
 
 .font-poppins {
   font-family: "Poppins";

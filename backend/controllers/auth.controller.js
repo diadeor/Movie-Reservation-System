@@ -18,9 +18,9 @@ export const signIn = async (req, res, next) => {
     if (passValid) {
       const token = jwt.sign({ id, role }, JWT_SECRET, { expiresIn: JWT_EXPIRE });
       res.cookie("token", token, {
-        secure: false,
+        secure: true,
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "none",
         maxAge: 1000 * 60 * 60 * 24,
       });
 
@@ -65,9 +65,9 @@ export const signUp = async (req, res, next) => {
       expiresIn: JWT_EXPIRE,
     });
     res.cookie("token", token, {
-      secure: false,
+      secure: true,
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 1000 * 60 * 60 * 24,
     });
 
@@ -92,7 +92,7 @@ export const signOut = async (req, res, next) => {
     const token = req.cookies.token;
     if (!token) throw new Error("Not logged in !!");
 
-    res.cookie("token", token, { httpOnly: true, secure: false, sameSite: true, maxAge: 1 });
+    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none", maxAge: 1 });
     res.json({
       success: true,
       message: "User logged out",

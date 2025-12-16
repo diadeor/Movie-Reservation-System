@@ -10,11 +10,12 @@ const Home = () => {
 
   return (
     <>
-      <img src={banner} alt="" className="rounded-md mt-5" />
-      <div className="now-showing mt-5 flex flex-col">
+      <img src={banner} alt="" className="rounded-md" />
+      <hr className="rounded-full border border-orange-800" />
+      <div className="now-showing flex flex-col">
         <div className="flex flex-row flex-wrap items-center justify-between mb-5">
           <p className=" text-xl uppercase">Now Showing</p>
-          <DateComponent currentDate={selectedDate} setCurrentDate={setSelectedDate} />
+          <DateComponent size="small" currentDate={selectedDate} setCurrentDate={setSelectedDate} />
         </div>
         <ul className="shows grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 font-poppins w-full">
           {movies &&
