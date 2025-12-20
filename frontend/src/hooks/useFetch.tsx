@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const useFetch = () => {
+const useFetch = (creds = true) => {
   const getReq = async (url: string) => {
     try {
-      const { data: resp } = await axios.get(url, { withCredentials: true });
+      const { data: resp } = await axios.get(url, { withCredentials: creds });
       // console.log(resp);
       if (resp.success || resp.Response === "True") {
         return { data: resp, error: null };

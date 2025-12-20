@@ -35,7 +35,7 @@ type MovieFetch = {
 const AddMovie = () => {
   const apiKey = "f9c86c81";
   const input = useRef<HTMLInputElement>(null);
-  const searchMovies = useFetch();
+  const searchMovies = useFetch(false);
   const [movieList, setMovieList] = useState<MovieFetch[]>();
   const [selected, setSelected] = useState<MovieFetch>();
   const addMovieUrl = `http://localhost:5000/api/movies/add`;
@@ -82,7 +82,7 @@ const AddMovie = () => {
           <CirclePlus />
         </button>
       </DialogTrigger>
-      <DialogContent className="w-10/12">
+      <DialogContent className="w-10/12 border-2 ">
         <DialogHeader>
           <DialogTitle>Add New Movie</DialogTitle>
           <DialogDescription>Search for a movie here to add</DialogDescription>
@@ -134,7 +134,9 @@ const AddMovie = () => {
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline" className="text-black">
+              Cancel
+            </Button>
           </DialogClose>
           <Button type="submit" onClick={addMovie} disabled={selected && language ? false : true}>
             {selected ? `Add ${selected?.Title} (${selected?.Year})` : "Select a movie to add"}

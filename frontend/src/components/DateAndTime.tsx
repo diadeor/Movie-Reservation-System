@@ -10,22 +10,26 @@ function DateAndTime({
   setDate,
   time,
   setTime,
+  timeClass,
+  dateClass,
 }: {
   date: Date;
   setDate: any;
   time: string;
   setTime: any;
+  timeClass?: string;
+  dateClass?: string;
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="flex flex-row gap-4 w-full">
-      <div className=" flex-1">
+    <div className={`flex flex-row gap-4 w-full text-black`}>
+      <div className="flex-1">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               id="date-picker"
-              className="w-full justify-between font-normal"
+              className={`${dateClass} w-full justify-between font-bold tracking-wider`}
             >
               {date ? date.toLocaleDateString("en-ca") : "Select date"}
               <ChevronDownIcon />
@@ -52,7 +56,7 @@ function DateAndTime({
           step="1"
           value={time}
           onChange={(e) => setTime(e.target.value)}
-          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+          className={`bg-background ${timeClass} font-bold appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none`}
         />
       </div>
     </div>

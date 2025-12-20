@@ -1,6 +1,6 @@
 import { type Show, type Movie, useShowContext } from "@/contexts/ShowsContext";
 
-const Shows = ({ setTab }: { setTab?: any }) => {
+const Shows = ({ setTab, edit }: { setTab?: any; edit: any }) => {
   const { shows, movies } = useShowContext();
 
   return (
@@ -12,9 +12,12 @@ const Shows = ({ setTab }: { setTab?: any }) => {
       const { title, poster } = movie;
       return (
         <li
-          className="bg-orange-800 p-3 rounded-md flex flex-row gap-3 font-poppins"
+          className="bg-orange-800 p-3 rounded-md flex flex-row gap-3 font-poppins hover:scale-95 transition"
           key={index}
-          onClick={() => setTab("edit-show")}
+          onClick={() => {
+            setTab("edit-show");
+            edit(show);
+          }}
         >
           <div className="first-column">
             <img src={poster} alt="" className="w-25 rounded-md" />

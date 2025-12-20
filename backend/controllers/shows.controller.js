@@ -57,11 +57,28 @@ export const addShow = async (req, res, next) => {
     });
     if (alreadyExists) throw new Error("Show already exists");
 
-    const movieValid = await prisma.movies.findUniqueOrThrow({ where: { id: movie_id } });
+    await prisma.movies.findUniqueOrThrow({ where: { id: movie_id } });
 
-    console.log({ movieValid });
+    const now = new Date();
+    const currentDateStr = now.toLocaleDateString("en-CA");
+    const currentTimeStr = now.toLocaleTimeString("en-GB", { hour12: false });
 
-    const newShow = await prisma.shows.create({ data: show });
+    await prisma.shows.updateMany({
+      where: {
+        status: "upcoming",
+        movie_id,
+        OR: [
+          { date: { lt: currentDateStr } },
+          { date: { equals: currentDateStr }, time: { lt: currentTimeStr } },
+        ],
+      },
+      data: { status: "expired" },
+    });
+
+    const newShow = await prisma.$transaction([
+      prisma.shows.create({ data: show }),
+      prisma.movies.update({ where: { id: movie_id }, data: { status: "active" } }),
+    ]);
     console.log({ newShow });
     res.json({
       success: true,

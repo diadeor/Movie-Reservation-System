@@ -12,8 +12,10 @@ const BookShow = () => {
   const nav = useNavigate();
   const showId = id ? +id : 0;
   const { movies, shows } = useShowContext();
-  const [show, setShow] = useState<Show>();
-  const [movie, setMovie] = useState<Movie>();
+  const show = shows.find((show: Show) => show.id === showId);
+  const movie = movies.find((movie: Movie) => movie.id === show.movie_id);
+  const time = Number(show.time.slice(0, 2)) % 12;
+  const amOrPm = show.time.slice(0, 2) > 12 ? "PM" : "AM";
   const totalSeats = [
     "a1",
     "a2",
@@ -69,18 +71,13 @@ const BookShow = () => {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const ticketUrl = "http://localhost:5000/api/tickets/create";
   const ticketReq = usePost(ticketUrl);
+  const partitionClass =
+    "bg-orange-950 p-1 px-3 flex-1 rounded-sm justify-center items-center flex";
 
   useEffect(() => {
     !user && nav("/login");
   }, []);
 
-  useEffect(() => {
-    if (shows && movies) {
-      const selectedShow = shows.find((show: Show) => show.id === showId);
-      setShow(selectedShow);
-      setMovie(movies.find((movie: Movie) => movie.id === selectedShow.movie_id));
-    }
-  }, [shows]);
   const addSeat = (seat: string) => {
     const alreadyExists = selectedSeats.includes(seat);
     const seatAvailable = show?.available_seats.includes(seat);
@@ -101,22 +98,33 @@ const BookShow = () => {
   return (
     user && (
       <div className="flex flex-col items-center gap-5 w-full h-full">
-        <p className=" text-xl text-white font-semibold font-macondo tracking-widest uppercase">
+        <p className=" text-2xl text-transparent bg-clip-text bg-linear-to-r from-red-500 to-yellow-500 font-semibold font-macondo tracking-widest uppercase">
           Book your seats
         </p>
         {movie && (
-          <div className="show-details flex flex-row w-full max-w-150 bg-white/20 p-3 rounded-md gap-3 text-white">
+          <div className="show-details flex flex-row w-full max-w-150 bg-orange-900 p-3 rounded-md gap-3">
             <img src={movie.poster} alt={movie.title} className="w-20 rounded-md h-full" />
             <div className="right-show font-bold flex flex-col w-full gap-1">
-              <p className="text-lg bg-white/20 p-1 px-3 flex-1 rounded-sm">{movie.title}</p>
-              <p className=" bg-white/20 p-1 px-3 flex-1 rounded-sm">{movie.runtime}</p>
-              <p className=" bg-white/20 p-1 px-3 flex-1 rounded-sm">{show?.time}</p>
+              <p className="text-xl">{movie.title}</p>
+              <div className="flex flex-row gap-1">
+                <p className={partitionClass}>{movie.runtime}</p>
+                <p className={partitionClass}>{`${time}${show.time.slice(2)} ${amOrPm}`}</p>
+              </div>
+              <p className={`${partitionClass} `}>
+                {show?.date &&
+                  new Date(show.date).toLocaleDateString("en-ca", {
+                    month: "short",
+                    year: "numeric",
+                    day: "2-digit",
+                    weekday: "long",
+                  })}
+              </p>
             </div>
           </div>
         )}
-        <hr className="border w-full border-white/40 rounded-full max-w-220" />
+        <hr className="border w-full border-orange-900 rounded-full max-w-220" />
         <div className="seats-container flex flex-col gap-5 max-w-220 w-full">
-          <p className="screen border-3 border-white/50 w-full h-40 grow rounded-md bg-white/20 flex items-center justify-center text-white uppercase tracking-wider font-bold">
+          <p className="text-xl screen border-3 border-orange-900 w-full h-40 grow rounded-md bg-orange-900/50 flex items-center justify-center  uppercase tracking-wider font-bold">
             Screen
           </p>
           {show && (
@@ -158,7 +166,7 @@ const BookShow = () => {
           </div>
         </div>
         {show && (
-          <div className="bottom absolute bottom-5 bg-blue-500 w-9/10 max-w-220 p-5 text-white flex-row flex items-center justify-between rounded-xl">
+          <div className="bottom absolute bottom-5 bg-orange-900 w-9/10 max-w-220 p-5 text-white flex-row flex items-center justify-between rounded-xl">
             <p className="total font-jetbrains font-bold text-xl">
               Rs.{show.price * selectedSeats.length}
             </p>

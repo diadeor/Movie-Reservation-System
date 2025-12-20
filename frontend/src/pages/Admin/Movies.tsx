@@ -24,13 +24,13 @@ const Movies = () => {
                   {castList[0]}, {castList[1]}
                 </p>
               </div>
-              <select
-                className="outline-0 font-semibold bg-orange-700 py-2 px-3 rounded-md"
-                defaultValue={status}
+              <p
+                className={`uppercase font-bold ${
+                  status === "active" ? "text-green-300" : "text-red-200"
+                }`}
               >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
+                {status}
+              </p>
             </div>
             <div className="two flex flex-row gap-2 w-full font-jetbrains">
               <p className="direct flex flex-col bg-orange-900 p-2 grow rounded-md flex-1">

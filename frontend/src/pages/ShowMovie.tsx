@@ -31,9 +31,7 @@ const ShowMovie = () => {
     },
     {
       title: "Runtime",
-      value: `${(+movie.runtime.split(" ")[0] / 60).toFixed(0)} hours ${(
-        +movie.runtime.split(" ")[0] % 60
-      ).toFixed(0)} mins`,
+      value: movie.runtime,
     },
   ];
 
@@ -46,7 +44,7 @@ const ShowMovie = () => {
   return (
     movie && (
       <>
-        <div className="movie-details flex flex-row flex-wrap justify-center gap-5 overflow-hidden">
+        <div className="movie-details flex flex-row flex-wrap justify-center gap-5 overflow-hidden md:py-5">
           <img src={movie.poster} alt="" className="rounded-3xl flex-1 w-full max-w-60 h-full" />
           <div className="right font-poppins flex-1 min-w-70 w-full">
             <p className="font-bold text-xl bg-orange-800 text-white inline px-5 uppercase rounded-xs rounded-tl-xl rounded-br-xl">
@@ -73,7 +71,7 @@ const ShowMovie = () => {
         </div>
         <p className="uppercase font-black tracking-wider text-xl mt-5 text-center">shows</p>
         <DateComponent size="large" currentDate={selectedDate} setCurrentDate={setSelectedDate} />
-        <hr className="border border-white/40 rounded-full" />
+        <hr className="border border-orange-800 rounded-full" />
         <ul className="time flex flex-row">
           {filteredShows &&
             filteredShows.map((show, index) => {
@@ -85,7 +83,7 @@ const ShowMovie = () => {
                 <Link to={`/shows/${show.id}`} key={index}>
                   <li
                     key={index}
-                    className="font-jetbrains uppercase bg-white/20 p-10 font-bold text-2xl rounded-md backdrop-blur-sm"
+                    className="font-jetbrains uppercase bg-orange-900 p-10 font-bold text-2xl rounded-md backdrop-blur-sm"
                   >
                     {updatedTime}&nbsp;
                     {am}
@@ -94,7 +92,7 @@ const ShowMovie = () => {
               );
             })}
           {filteredShows?.length === 0 && (
-            <p className="text-center border-2 rounded-tr-4xl rounded-bl-4xl rounded-md w-full py-10 text-xl font-semibold text-red-300">
+            <p className="text-center border-2 border-red-400 rounded-tr-4xl rounded-bl-4xl rounded-md w-full py-10 text-xl font-semibold text-red-400">
               No shows !!!
             </p>
           )}

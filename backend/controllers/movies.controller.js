@@ -18,17 +18,6 @@ export const getActiveMovies = async (req, res, next) => {
       where: {
         status: "active",
       },
-      select: {
-        id: true,
-        title: true,
-        poster: true,
-        runtime: true,
-        director: true,
-        cast: true,
-        released: true,
-        plot: true,
-        genre: true,
-      },
     });
     res.json({
       success: true,
@@ -101,6 +90,11 @@ export const addMovie = async (req, res, next) => {
     });
     if (alreadyExists) throw new Error("Movie already exists in database");
 
+    const runtimeMins = +String(movie.Runtime).split(" ")[0];
+    const hours = (runtimeMins / 60).toFixed(0);
+    const minutes = runtimeMins % 60;
+    const runtime = `${hours} hours ${minutes ? `${minutes} mins` : ""}`;
+
     const movieObject = {
       imdbID,
       title: movie.Title,
@@ -110,16 +104,17 @@ export const addMovie = async (req, res, next) => {
       genre: movie.Genre,
       cast: movie.Actors,
       director: movie.Director,
-      runtime: movie.Runtime,
+      runtime,
       plot: movie.Plot,
       language,
       poster: movie.Poster,
-      status: "active",
+      status: "inactive",
     };
     console.log(movieObject);
     const newMovie = await prisma.movies.create({
       data: movieObject,
     });
+    console.log({ newMovie });
     res.json({ success: true, message: "New movie added", movie: { ...newMovie } });
   } catch (error) {
     next(error);

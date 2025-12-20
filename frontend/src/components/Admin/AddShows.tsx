@@ -97,7 +97,9 @@ const AddShow = () => {
         <DialogHeader>
           <DialogTitle>Add New Show</DialogTitle>
           <DialogDescription>Fill up the details to add a show</DialogDescription>
-          {message && <p className="font-semibold bg-yellow-500 p-1 rounded-full">{message}</p>}
+          {message && (
+            <p className="font-semibold bg-yellow-500 p-1 rounded-full text-center">{message}</p>
+          )}
         </DialogHeader>
         <div className="grid gap-2">
           <div className=" gap-3 show-movies font-poppins rounded-md items-center justify-center flex flex-col overflow-hidden">

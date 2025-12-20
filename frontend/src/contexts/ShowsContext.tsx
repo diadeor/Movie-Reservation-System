@@ -35,28 +35,39 @@ const ShowProvider = ({ children }: { children: ReactElement }) => {
   const [movies, setMovies] = useState<Movie[]>();
   const getRequest = useFetch();
   const baseUrl = "http://localhost:5000/api";
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const {
-          data: { movies },
-          error,
-        } = await getRequest(`${baseUrl}/movies/active`);
-        const {
-          data: { shows },
-          error: err,
-        } = await getRequest(`${baseUrl}/shows`);
+        const req1 = getRequest(`${baseUrl}/movies`);
+        const req2 = getRequest(`${baseUrl}/shows`);
+
+        // Parallel request
+        const [
+          {
+            data: { movies },
+            error,
+          },
+          {
+            data: { shows },
+            error: err,
+          },
+        ] = await Promise.all([req1, req2]);
 
         if (!error && movies) setMovies(movies);
         if (!err && shows) setShows(shows);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
-  return <ShowContext.Provider value={{ movies, shows }}>{children}</ShowContext.Provider>;
+  return (
+    <ShowContext.Provider value={{ movies, shows }}>{!loading && children}</ShowContext.Provider>
+  );
 };
 
 export default ShowProvider;
