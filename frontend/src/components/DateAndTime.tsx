@@ -10,26 +10,42 @@ function DateAndTime({
   setDate,
   time,
   setTime,
-  timeClass,
-  dateClass,
+  theme = "white",
 }: {
   date: Date;
   setDate: any;
   time: string;
   setTime: any;
-  timeClass?: string;
-  dateClass?: string;
+  theme?: "white" | "orange";
 }) {
   const [open, setOpen] = useState(false);
+  const themes = {
+    white: {
+      border: "",
+      background: "bg-white",
+      text: "text-slate-700",
+    },
+    orange: {
+      border: "border-orange-700",
+      background: "bg-orange-800",
+      text: "text-orange-200",
+    },
+  };
+
+  const current = themes[theme];
+
   return (
-    <div className={`flex flex-row gap-4 w-full text-black`}>
+    <div className={`flex flex-row gap-4 w-full ${current.text}`}>
       <div className="flex-1">
+        <label htmlFor="" className="pl-1 font-bold">
+          Date
+        </label>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               id="date-picker"
-              className={`${dateClass} w-full justify-between font-bold tracking-wider`}
+              className={`${current.background} ${current.border} w-full justify-between tracking-wider`}
             >
               {date ? date.toLocaleDateString("en-ca") : "Select date"}
               <ChevronDownIcon />
@@ -41,7 +57,6 @@ function DateAndTime({
               selected={date}
               captionLayout="label"
               onSelect={(selectedDate) => {
-                // console.log(selectedDate?.toLocaleDateString("en-ca"));
                 setDate(selectedDate);
                 setOpen(false);
               }}
@@ -50,13 +65,16 @@ function DateAndTime({
         </Popover>
       </div>
       <div className="flex-1">
+        <label htmlFor="" className="font-bold pl-1">
+          Time
+        </label>
         <Input
           type="time"
           id="time-picker"
           step="1"
           value={time}
           onChange={(e) => setTime(e.target.value)}
-          className={`bg-background ${timeClass} font-bold appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none`}
+          className={`${current.background} ${current.border} appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none`}
         />
       </div>
     </div>

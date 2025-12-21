@@ -89,3 +89,55 @@ export const addShow = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateShow = async (req, res, next) => {
+  try {
+    const { date, time, price, status } = req.body;
+    const { id } = req.params;
+
+    const providedTimeStamp = new Date(`${date}T${time}`);
+    const currentTimeStamp = new Date().getTime();
+
+    if (currentTimeStamp > providedTimeStamp) throw new Error("Invalid time or date");
+
+    const showExists = await prisma.shows.findUnique({ where: { id: +id } });
+
+    if (!showExists) throw new Error("Show does not exist");
+
+    const { movie_id } = showExists;
+
+    const updatedShow = await prisma.shows.update({
+      where: { id: +id },
+      data: { date, time, price: +price, status },
+    });
+    const now = new Date();
+    const currentDateStr = now.toLocaleDateString("en-CA");
+    const currentTimeStr = now.toLocaleTimeString("en-GB", { hour12: false });
+    await prisma.shows.updateMany({
+      where: {
+        status: "upcoming",
+        movie_id,
+        OR: [
+          { date: { lt: currentDateStr } },
+          { date: { equals: currentDateStr }, time: { lt: currentTimeStr } },
+        ],
+      },
+      data: { status: "expired" },
+    });
+
+    const shows = await prisma.shows.findMany({
+      where: { status: "upcoming", movie_id },
+    });
+
+    !shows.length &&
+      (await prisma.movies.update({ where: { id: movie_id }, data: { status: "inactive" } }));
+
+    res.json({
+      success: true,
+      message: "Show information updated",
+      show: { ...updatedShow },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

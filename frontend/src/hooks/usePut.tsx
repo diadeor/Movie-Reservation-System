@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const usePost = (url: string) => {
-  const postReq = async (body: Object) => {
+const usePut = (url: string) => {
+  const putReq = async (body: Object) => {
     try {
-      const { data } = await axios.post(url, body, {
+      const { data } = await axios.put(url, body, {
         withCredentials: true,
         validateStatus: () => true,
       });
@@ -16,7 +16,7 @@ const usePost = (url: string) => {
       return { data: null, error: "There has been an error" };
     }
   };
-  return postReq;
+  return putReq;
 };
 
-export default usePost;
+export default usePut;

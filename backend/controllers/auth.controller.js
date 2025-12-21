@@ -29,7 +29,7 @@ export const signIn = async (req, res, next) => {
         message: "User logged in successfully",
         user: { id, name, role, email, token },
       });
-    }
+    } else throw new Error("Password does not match");
   } catch (error) {
     next(error);
   }

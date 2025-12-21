@@ -6,7 +6,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ShowMovie from "./pages/ShowMovie";
 import BookShow from "./pages/BookShow";
 import Login from "./pages/Login";
-import SignUp from "./pages/Signup";
 
 function App() {
   return (
@@ -21,7 +20,6 @@ function App() {
             <Route path="/tickets" element={<BookShow />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/sign-up" element={<SignUp />} />
           </Routes>
         </div>
         <Footer />

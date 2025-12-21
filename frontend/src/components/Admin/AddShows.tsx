@@ -131,13 +131,18 @@ const AddShow = () => {
               </SelectContent>
             </Select>
             <DateAndTime date={date} setDate={setDate} time={time} setTime={setTime} />
-            <Input
-              type="number"
-              placeholder="Price per seat"
-              min={0}
-              value={show.price}
-              onChange={(e) => setShow({ ...show, price: +e.target.value })}
-            />
+            <div className="price">
+              <label htmlFor="" className="text-slate-700 font-bold pl-1">
+                Price
+              </label>
+              <Input
+                type="number"
+                placeholder="Price per seat"
+                min={0}
+                value={show.price}
+                onChange={(e) => setShow({ ...show, price: +e.target.value })}
+              />
+            </div>
           </div>
         </div>
         <DialogFooter>
