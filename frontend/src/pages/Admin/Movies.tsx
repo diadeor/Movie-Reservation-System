@@ -9,7 +9,7 @@ const Movies = () => {
       const castList = cast.split(", ");
       const year = new Date(released).getFullYear();
       return (
-        <li className="bg-orange-800 p-3 rounded-md flex flex-row gap-3" key={index}>
+        <li className="bg-[#681d0c] p-3 rounded-md flex flex-row gap-3  " key={index}>
           <div className="first-column">
             <img src={poster} alt="" className="min-w-20 w-20 rounded-md" />
           </div>
@@ -33,11 +33,11 @@ const Movies = () => {
               </p>
             </div>
             <div className="two flex flex-row gap-2 w-full font-jetbrains">
-              <p className="direct flex flex-col bg-orange-900 p-2 grow rounded-md flex-1">
+              <p className="direct flex flex-col bg-orange-950 p-2 grow rounded-md flex-1">
                 <span className="text-yellow-500">Director</span>{" "}
                 <span className="font-bold">{director}</span>
               </p>
-              <p className="direct flex flex-col bg-orange-900 p-2 grow rounded-md flex-1">
+              <p className="direct flex flex-col bg-orange-950 p-2 grow rounded-md flex-1">
                 <span className="text-yellow-500">Duration</span>{" "}
                 <span className="font-bold">{runtime}</span>
               </p>

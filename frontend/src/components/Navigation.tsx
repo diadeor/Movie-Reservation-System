@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaBarsStaggered, FaRegUser } from "react-icons/fa6";
 import { House, Clapperboard, Phone, X, UserRound } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "../assets/sg_colored.svg";
+import logo from "../assets/logo.png";
 import { useAuthContext } from "@/contexts/AuthContext";
 
 const Menu = () => {
@@ -65,7 +65,7 @@ const NavBar = () => {
           </ul>
         </div>
         <Link to={`/`}>
-          <img src={logo} alt="" className="w-13 aspect-square cursor-pointer" />
+          <img src={logo} alt="" className="w-15 aspect-auto cursor-pointer" />
         </Link>
         <ul className="menu-items sm:flex flex-row gap-5 font-bold hidden  grow justify-center text-nowrap">
           <Menu />

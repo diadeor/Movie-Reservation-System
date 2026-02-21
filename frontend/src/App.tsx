@@ -10,9 +10,9 @@ import Login from "./pages/Login";
 function App() {
   return (
     <Router>
-      <div className="main-container bg-orange-950 w-full min-h-svh flex flex-col items-center">
+      <div className="main-container bg-[#310e05] w-full min-h-svh flex flex-col items-center">
         <NavBar />
-        <div className="body-container px-5 pt-5 max-w-6xl w-full min-h-[calc(100svh-90px)] flex flex-col gap-5 text-orange-100 font-poppins">
+        <div className="body-container px-5 pt-5 max-w-6xl w-full min-h-[calc(100svh-85px)] flex flex-col gap-5 text-orange-100 font-poppins">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/movie/:id" element={<ShowMovie />} />

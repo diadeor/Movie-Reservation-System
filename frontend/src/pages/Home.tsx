@@ -33,7 +33,7 @@ const Home = () => {
   return (
     <>
       <img src={banner} alt="" className="rounded-md" />
-      <hr className="rounded-full border border-orange-800" />
+      <hr className="rounded-full border border-orange-700" />
       <div className="now-showing flex flex-col">
         <div className="flex flex-row flex-wrap items-center justify-between mb-5">
           <p className=" text-xl uppercase">Now Showing</p>
@@ -59,7 +59,7 @@ const Home = () => {
               );
             })}
           {filteredMovies?.length === 0 && (
-            <p className="border-2 gap-2 h-50 w-full flex flex-row items-center justify-center rounded-md border-red-400 text-red-400 text-xl col-span-full">
+            <p className="border-2 gap-2 h-50 w-full flex flex-row items-center justify-center rounded-md border-orange-700 text-orange-600 text-xl col-span-full">
               <Info />
               No shows for this date
             </p>

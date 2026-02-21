@@ -31,14 +31,14 @@ const EditShows = ({ showInfo, setCurrentTab }: { showInfo: Show; setCurrentTab:
   };
 
   return (
-    <div className="relative tab-admin flex flex-col h-full w-full p-2 px-4 rounded-md bg-orange-900 font-poppins text-orange-200">
+    <div className="relative tab-admin flex flex-col h-full w-full p-2 px-4 rounded-md bg-orange-950 font-poppins text-orange-200">
       <div className="top min-h-10 mb-2 items-center font-macondo flex flex-row justify-between">
         <p className="title flex flex-row gap-1 items-center uppercase tracking-wider text-xl font-bold">
           <ChevronLeft className="w-8 h-8 cursor-pointer" onClick={() => setCurrentTab("shows")} />
           Edit Show
         </p>
       </div>
-      <hr className="border border-orange-800 rounded-full mb-2" />
+      <hr className="border border-orange-600 rounded-full mb-3" />
       <div className="show-info flex flex-col gap-5 h-full">
         {movie && (
           <div className="movie grid grid-cols-[auto_1fr] fr grid-rows-4">
@@ -59,8 +59,8 @@ const EditShows = ({ showInfo, setCurrentTab }: { showInfo: Show; setCurrentTab:
           name="price"
           placeholder="200"
           label="Price"
-          bg="bg-orange-800"
-          border="border-orange-700"
+          bg="bg-orange-900"
+          border="border-orange-800"
           onChange={handlePriceChange}
           defaultValue={showInfo.price}
         />
@@ -72,7 +72,7 @@ const EditShows = ({ showInfo, setCurrentTab }: { showInfo: Show; setCurrentTab:
             name="status"
             defaultValue={showInfo.status}
             onChange={(e) => setStatus(e.target.value)}
-            className="bg-orange-800 p-2 rounded-md outline-none focus:bg-orange-700"
+            className="bg-orange-900 p-2 rounded-md outline-none focus:bg-orange-700"
           >
             <option value="upcoming">Upcoming</option>
             <option value="expired">Expired</option>
@@ -82,7 +82,7 @@ const EditShows = ({ showInfo, setCurrentTab }: { showInfo: Show; setCurrentTab:
         <Button
           type="submit"
           variant={`secondary`}
-          className={`h-11  w-full bg-orange-600 text-white font-bold text-md hover:bg-orange-500 shadow-lg shadow-amber-600/50 outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-orange-900 focus:ring-orange-500 
+          className={`h-11  w-full bg-orange-700 text-white font-bold text-md hover:bg-orange-500 shadow-lg shadow-amber-600/50 outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-orange-900 focus:ring-orange-500 
             }`}
           onClick={editShow}
         >

@@ -23,7 +23,7 @@ const Users = () => {
     <>
       {users?.map((el, index) => {
         return (
-          <li className="bg-orange- p-3 rounded-md flex flex-col bg-orange-800" key={index}>
+          <li className="bg-orange- p-3 rounded-md flex flex-col bg-[#681d0c]" key={index}>
             <p className="name font-semibold tracking-wider">{el.name}</p>
             <p className="email text-sm">{el.email}</p>
           </li>

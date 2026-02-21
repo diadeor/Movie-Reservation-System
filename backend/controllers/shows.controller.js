@@ -4,7 +4,7 @@ export const getShows = async (req, res, next) => {
   try {
     const shows = await prisma.shows.findMany({});
 
-    res.json({
+    return res.json({
       success: true,
       shows,
     });

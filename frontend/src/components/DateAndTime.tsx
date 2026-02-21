@@ -26,8 +26,8 @@ function DateAndTime({
       text: "text-slate-700",
     },
     orange: {
-      border: "border-orange-700",
-      background: "bg-orange-800",
+      border: "border-orange-800",
+      background: "bg-orange-900",
       text: "text-orange-200",
     },
   };
