@@ -66,6 +66,7 @@ model Tickets {
   total           Int           @default(dbgenerated("(number_of_seats * seat_price)"))
   grand_total     Int           @default(dbgenerated("((number_of_seats * seat_price) - COALESCE((discount)::integer, 0))"))
   status          ticket_status @default(unpaid)
+  createdAt       DateTime      @default(now()) @db.Timestamptz(6)
   Shows           Shows         @relation(fields: [show], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Users           Users         @relation(fields: [user], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

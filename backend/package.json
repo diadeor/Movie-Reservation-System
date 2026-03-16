@@ -20,8 +20,8 @@
   },
   "homepage": "https://github.com/diadeor/Movie-Reservation-System#readme",
   "dependencies": {
-    "@prisma/adapter-pg": "^7.0.1",
-    "@prisma/client": "^7.1.0",
+    "@prisma/adapter-pg": "7.1.0",
+    "@prisma/client": "7.1.0",
     "axios": "^1.13.2",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
@@ -32,7 +32,7 @@
     "pg": "^8.16.3"
   },
   "devDependencies": {
-    "prisma": "^7.1.0"
+    "prisma": "7.1.0"
   },
   "overrides": {
     "hono": "^4.10.3",

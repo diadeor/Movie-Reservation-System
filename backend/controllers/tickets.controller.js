@@ -1,12 +1,24 @@
 import prisma from "../config/db.js";
+import throwError from "../config/err.js";
 
 export const getTickets = async (req, res, next) => {
   try {
-    const tickets = await prisma.tickets.findMany({});
+    const tickets = await prisma.tickets.findMany({
+      orderBy: {
+        id: "desc",
+      },
+    });
+    console.log(tickets);
+    const newObj = {};
 
-    res.json({
+    for (let x of tickets) {
+      const keyExists = Object.keys(newObj).includes(String(x.show));
+      keyExists ? newObj[x.show].push(x) : (newObj[x.show] = [x]);
+    }
+
+    return res.json({
       success: true,
-      tickets,
+      tickets: newObj,
     });
   } catch (error) {
     next(error);
@@ -16,13 +28,10 @@ export const getTickets = async (req, res, next) => {
 export const getTicket = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const ticket = await prisma.tickets.findUnique({
-      where: {
-        id: +id,
-      },
-    });
+    const ticket = await prisma.tickets.findUnique({ where: { id: +id } });
+    if (!ticket) throwError("No ticket with such id", 404);
 
-    res.json({
+    return res.json({
       success: true,
       ticket,
     });
@@ -35,7 +44,9 @@ export const createTicket = async (req, res, next) => {
   try {
     const { id } = req.user;
     const { seats, show } = req.body;
-    const showExists = await prisma.shows.findUniqueOrThrow({ where: { id: show } });
+
+    const showExists = await prisma.shows.findUnique({ where: { id: show } });
+    if (!showExists) throwError("Show does not exist", 404);
 
     const ticketObj = {
       show,
@@ -58,7 +69,7 @@ export const createTicket = async (req, res, next) => {
     ]);
 
     console.log(shows, tickets);
-    res.json({
+    return res.json({
       success: true,
       tickets,
     });

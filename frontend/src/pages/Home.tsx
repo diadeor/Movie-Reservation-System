@@ -42,18 +42,13 @@ const Home = () => {
         <ul className="shows grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 font-poppins w-full">
           {filteredMovies &&
             filteredMovies.map((item: Movie, index: number) => {
-              const runtime = +item.runtime.split(" ")[0];
-              const hours = (runtime / 60).toFixed(0);
-              const minutes = runtime % 60;
-
+              const { id, title, runtime, poster } = item;
               return (
-                <Link to={`/movie/${item.id}`} key={index}>
+                <Link to={`/movie/${id}`} key={index}>
                   <li className="movie flex flex-col items-center">
-                    <img src={item.poster} alt="" className=" w-full rounded- rounded-md" />
-                    <p className="font-semibold mt-2 uppercase">{item.title}</p>
-                    <p className="font-jetbrains text-sm text-white/80">{`${hours} hours ${
-                      minutes ? `${minutes} mins` : ""
-                    }`}</p>
+                    <img src={poster} alt="" className=" w-full rounded- rounded-md" />
+                    <p className="font-semibold mt-2 uppercase">{title}</p>
+                    <p className="font-jetbrains text-sm text-white/80">{runtime}</p>
                   </li>
                 </Link>
               );

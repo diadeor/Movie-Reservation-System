@@ -14,6 +14,8 @@ const ShowMovie = () => {
 
   useEffect(() => {
     movies && setMovie(movies.find((item: Movie) => item.id === movieId));
+    const movieSpecificShows = shows.filter((show: Show) => show.movie_id === movieId);
+    console.log(movieSpecificShows);
   }, [movies]);
 
   const details = movie && [
@@ -58,10 +60,11 @@ const ShowMovie = () => {
               <tbody>
                 {details &&
                   details.map((item, index) => {
+                    const { title, value } = item;
                     return (
                       <tr className="" key={index}>
-                        <td className="font-jetbrains">{item.title}: </td>
-                        <td className="pl-3 font-bold">{item.value}</td>
+                        <td className="font-jetbrains">{title}: </td>
+                        <td className="pl-3 font-bold">{value}</td>
                       </tr>
                     );
                   })}

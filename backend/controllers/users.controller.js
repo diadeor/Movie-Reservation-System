@@ -1,17 +1,21 @@
 import prisma from "../config/db.js";
+import throwError from "../config/err.js";
 
 export const getUsers = async (req, res, next) => {
   try {
     const { id, role } = req.user;
 
-    if (String(role).toLowerCase() !== "admin") {
-      const error = new Error("Unauthorized, must be an admin to access this route");
-      error.statusCode = 401;
-      throw error;
-    }
-    const users = await prisma.users.findMany({});
+    if (role !== "admin") throwError("Unauthorized, must be an admin to access this route", 401);
+    const users = await prisma.users.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+      },
+    });
 
-    res.json({
+    return res.json({
       success: true,
       users,
     });
@@ -25,20 +29,15 @@ export const getUser = async (req, res, next) => {
     const { id } = req.params;
     const { role } = req.user;
 
-    if (String(role).toLowerCase() !== "admin") {
-      const error = new Error("Unauthorized, must be an admin to access this route");
-      error.statusCode = 401;
-      throw error;
-    }
+    if (role !== "admin") throwError("Unauthorized, must be an admin to access this route", 401);
 
-    const user = await prisma.users.findUnique({ where: { id: +id } });
-    if (!user) {
-      const error = new Error("User not found !!");
-      error.statusCode = 404;
-      throw error;
-    }
+    const user = await prisma.users.findUnique({
+      where: { id: +id },
+      select: { id: true, name: true, email: true, role: true },
+    });
+    if (!user) throwError("User not found", 401);
 
-    res.json({
+    return res.json({
       success: true,
       user,
     });
@@ -55,7 +54,7 @@ export const getCurrentUser = async (req, res, next) => {
       select: { id: true, name: true, email: true, role: true },
     });
 
-    res.json({
+    return res.json({
       success: true,
       user,
     });

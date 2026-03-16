@@ -39,7 +39,8 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState("users");
   const [editInfo, setEditInfo] = useState<Show>();
   const { user } = useAuthContext();
-  const isAdmin = user ? (user.role === "admin" ? true : false) : false;
+  const { name, role } = user;
+  const isAdmin = user ? (role === "admin" ? true : false) : false;
   const nav = useNavigate();
 
   useEffect(() => {
@@ -48,7 +49,7 @@ const Admin = () => {
         setCount((prev) => prev - 1);
       }, 1000);
       if (count <= 0) {
-        nav("/");
+        nav("/profile");
         clearInterval(countInterval);
       }
     }
@@ -58,7 +59,7 @@ const Admin = () => {
       {isAdmin && (
         <div className="flex flex-col items-center admin-container w-full h-[calc(100svh-160px)] font-poppins max-w-6xl text-orange-200">
           <p className="text-2xl font-bold mb-5 bg-clip-text bg-linear-to-r text-transparent from-red-500 to-yellow-500">
-            Howdy, {user && user.name.split(" ")[0]}
+            Howdy, {name.split(" ")[0]}
           </p>
           <Tabs
             value={activeTab}

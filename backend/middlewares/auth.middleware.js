@@ -1,14 +1,11 @@
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/env.js";
+import throwError from "../config/err.js";
 
 const authorizeUser = async (req, res, next) => {
   try {
     const token = req.cookies.token;
-    if (!token) {
-      const error = new Error("Unauthorized: Not logged in");
-      error.statusCode = 401;
-      throw error;
-    }
+    if (!token) throwError("Unauthorized: Not logged in", 401);
 
     const user = jwt.verify(token, JWT_SECRET);
 

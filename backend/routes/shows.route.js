@@ -10,9 +10,9 @@ import {
 const showRouter = Router();
 
 showRouter.get("/", getShows);
-showRouter.get("/:id", getShow);
 showRouter.get("/movie/:id", getShowByMovie);
 showRouter.post("/add", addShow);
 showRouter.put("/update/:id", updateShow);
+showRouter.get("/:id", getShow);
 
 export default showRouter;

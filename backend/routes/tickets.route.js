@@ -4,7 +4,7 @@ import { createTicket, getTicket, getTickets } from "../controllers/tickets.cont
 const ticketRouter = Router();
 
 ticketRouter.get("/", getTickets);
-ticketRouter.get("/:id", getTicket);
 ticketRouter.post("/create", createTicket);
+ticketRouter.get("/:id", getTicket);
 
 export default ticketRouter;

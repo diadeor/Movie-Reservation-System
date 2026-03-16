@@ -1,4 +1,5 @@
 import prisma from "../config/db.js";
+import throwError from "../config/err.js";
 
 export const getShows = async (req, res, next) => {
   try {
@@ -19,7 +20,9 @@ export const getShow = async (req, res, next) => {
 
     const show = await prisma.shows.findUnique({ where: { id } });
 
-    res.json({
+    if (!show) throwError("Show doesn't exist", 404);
+
+    return res.json({
       success: true,
       show,
     });
@@ -31,9 +34,13 @@ export const getShowByMovie = async (req, res, next) => {
   try {
     const { id } = req.params;
 
+    const movieExists = await prisma.movies.findUnique({ where: { id } });
+
+    if (!movieExists) throwError("Movie doesn't exist", 404);
+
     const shows = await prisma.shows.findMany({ where: { movie_id: +id } });
 
-    res.json({
+    return res.json({
       success: true,
       shows,
     });
@@ -48,6 +55,10 @@ export const addShow = async (req, res, next) => {
     const { date, time, price, status, available_seats, reserved_seats, movie_id } = show;
 
     console.log({ show });
+
+    const movieExists = await prisma.movies.findUnique({ where: { id: movie_id } });
+    if (!movieExists) throwError("Movie doesn't exist", 404);
+
     const alreadyExists = await prisma.shows.findFirst({
       where: {
         date,
@@ -55,9 +66,8 @@ export const addShow = async (req, res, next) => {
         movie_id,
       },
     });
-    if (alreadyExists) throw new Error("Show already exists");
 
-    await prisma.movies.findUniqueOrThrow({ where: { id: movie_id } });
+    if (alreadyExists) throwError("Show already exists", 401);
 
     const now = new Date();
     const currentDateStr = now.toLocaleDateString("en-CA");
@@ -80,7 +90,7 @@ export const addShow = async (req, res, next) => {
       prisma.movies.update({ where: { id: movie_id }, data: { status: "active" } }),
     ]);
     console.log({ newShow });
-    res.json({
+    return res.json({
       success: true,
       message: "New show created",
       newShow,
@@ -98,11 +108,11 @@ export const updateShow = async (req, res, next) => {
     const providedTimeStamp = new Date(`${date}T${time}`);
     const currentTimeStamp = new Date().getTime();
 
-    if (currentTimeStamp > providedTimeStamp) throw new Error("Invalid time or date");
+    if (currentTimeStamp > providedTimeStamp) throwError("Invalid time & date", 400);
 
     const showExists = await prisma.shows.findUnique({ where: { id: +id } });
 
-    if (!showExists) throw new Error("Show does not exist");
+    if (!showExists) throwError("Show does not exist", 404);
 
     const { movie_id } = showExists;
 
@@ -132,7 +142,7 @@ export const updateShow = async (req, res, next) => {
     !shows.length &&
       (await prisma.movies.update({ where: { id: movie_id }, data: { status: "inactive" } }));
 
-    res.json({
+    return res.json({
       success: true,
       message: "Show information updated",
       show: { ...updatedShow },

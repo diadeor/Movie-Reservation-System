@@ -1,10 +1,11 @@
 import prisma from "../config/db.js";
 import axios from "axios";
+import throwError from "../config/err.js";
 
 export const getMovies = async (req, res, next) => {
   try {
     const movies = await prisma.movies.findMany({});
-    res.json({
+    return res.json({
       success: true,
       movies,
     });
@@ -19,7 +20,7 @@ export const getActiveMovies = async (req, res, next) => {
         status: "active",
       },
     });
-    res.json({
+    return res.json({
       success: true,
       movies,
     });
@@ -32,7 +33,9 @@ export const getMovie = async (req, res, next) => {
     const { id } = req.params;
     const movie = await prisma.movies.findUnique({ where: { id: +id } });
 
-    res.json({
+    if (!movie) throwError("No movie with that id", 404);
+
+    return res.json({
       success: true,
       movie,
     });
@@ -47,7 +50,9 @@ export const updateStatus = async (req, res, next) => {
     console.log({ okay, id });
     const movie = await prisma.movies.findUnique({ where: { id: +id } });
 
-    res.json({
+    if (!movie) throwError("No movie with that id", 404);
+
+    return res.json({
       success: true,
       movie,
     });
@@ -67,7 +72,7 @@ export const getMoviesName = async (req, res, next) => {
       },
     });
 
-    res.json({
+    return res.json({
       success: true,
       movies,
     });
@@ -81,16 +86,16 @@ export const addMovie = async (req, res, next) => {
     const url = `https://www.omdbapi.com/?apikey=f9c86c81&i=${imdbID}`;
     const { data: movie } = await axios.get(url);
 
-    if (movie.Response === "False") throw new Error(movie.Error);
+    if (movie.Response === "False") throwError(movie.Error, 400);
 
     const alreadyExists = await prisma.movies.findUnique({
       where: {
         imdbID,
       },
     });
-    if (alreadyExists) throw new Error("Movie already exists in database");
+    if (alreadyExists) throwError("Movie already exists in database", 400);
 
-    const runtimeMins = +String(movie.Runtime).split(" ")[0];
+    const runtimeMins = +movie.Runtime.split(" ")[0];
     const hours = (runtimeMins / 60).toFixed(0);
     const minutes = runtimeMins % 60;
     const runtime = `${hours} hours ${minutes ? `${minutes} mins` : ""}`;
@@ -110,12 +115,11 @@ export const addMovie = async (req, res, next) => {
       poster: movie.Poster,
       status: "inactive",
     };
-    console.log(movieObject);
     const newMovie = await prisma.movies.create({
       data: movieObject,
     });
     console.log({ newMovie });
-    res.json({ success: true, message: "New movie added", movie: { ...newMovie } });
+    return res.json({ success: true, message: "New movie added", movie: { ...newMovie } });
   } catch (error) {
     next(error);
   }

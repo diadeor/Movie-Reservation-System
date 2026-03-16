@@ -79,7 +79,7 @@ const NavBar = () => {
           </Link>
         )}
         {user && (
-          <Link to={`/admin`}>
+          <Link to={user.role === "admin" ? `/admin` : `/profile`}>
             <UserRound size={`1.8em`} className="text-orange-700" />
           </Link>
         )}

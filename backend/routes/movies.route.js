@@ -13,8 +13,8 @@ const movieRouter = Router();
 movieRouter.get("/", getMovies);
 movieRouter.get("/active", getActiveMovies);
 movieRouter.get("/admin", getMoviesName);
+movieRouter.post("/add", addMovie);
 movieRouter.get("/:id", getMovie);
 // movieRouter.put("/update/:id", updateStatus);
-movieRouter.post("/add", addMovie);
 
 export default movieRouter;

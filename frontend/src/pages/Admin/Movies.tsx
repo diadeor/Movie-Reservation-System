@@ -9,7 +9,7 @@ const Movies = () => {
       const castList = cast.split(", ");
       const year = new Date(released).getFullYear();
       return (
-        <li className="bg-[#681d0c] p-3 rounded-md flex flex-row gap-3  " key={index}>
+        <li className="bg-[#681d0c] p-3 rounded-md flex flex-row gap-3" key={index}>
           <div className="first-column">
             <img src={poster} alt="" className="min-w-20 w-20 rounded-md" />
           </div>
