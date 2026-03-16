@@ -10,12 +10,20 @@ const ShowMovie = () => {
   const [movie, setMovie] = useState<Movie>();
   const [selectedDate, setSelectedDate] = useState(dates[0].value);
   const [filteredShows, setFilteredShows] = useState<Show[]>();
-  console.log(shows);
+  // console.log(shows);
 
   useEffect(() => {
     movies && setMovie(movies.find((item: Movie) => item.id === movieId));
-    const movieSpecificShows = shows.filter((show: Show) => show.movie_id === movieId);
-    console.log(movieSpecificShows);
+    const movieSpecificShows: Show[] = shows.filter((show: Show) => show.movie_id === movieId);
+    for (let x of movieSpecificShows) {
+      const movieTime = new Date(`${x.date}T${x.time}`);
+      const currentTime = new Date();
+      const isMovieValid = movieTime > currentTime;
+      if (isMovieValid) {
+        const validDate = movieTime.toLocaleDateString("en-ca");
+        setSelectedDate(validDate);
+      }
+    }
   }, [movies]);
 
   const details = movie && [

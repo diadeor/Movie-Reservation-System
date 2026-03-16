@@ -14,6 +14,8 @@ const EditShows = ({ showInfo, setCurrentTab }: { showInfo: Show; setCurrentTab:
   const [status, setStatus] = useState(showInfo.status);
   const editShowUrl = `http://localhost:5000/api/shows/update/${showInfo.id}`;
   const editShowReq = usePut(editShowUrl);
+  const [message, setMessage] = useState("");
+  const [bg, setBg] = useState("bg-green-600");
 
   const movie: Movie = movies.find((movie: Movie) => showInfo?.movie_id === movie.id);
 
@@ -26,8 +28,19 @@ const EditShows = ({ showInfo, setCurrentTab }: { showInfo: Show; setCurrentTab:
   };
 
   const editShow = async () => {
-    const { data, error } = await editShowReq(showObj);
-    console.log(data, error);
+    try {
+      const { data, error } = await editShowReq(showObj);
+      console.log(data);
+      if (error) {
+        setMessage(error);
+        setBg("bg-red-600");
+      } else {
+        setMessage(data.message);
+        setBg("bg-green-600");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -38,7 +51,10 @@ const EditShows = ({ showInfo, setCurrentTab }: { showInfo: Show; setCurrentTab:
           Edit Show
         </p>
       </div>
-      <hr className="border border-orange-600 rounded-full mb-3" />
+      <hr className="border border-orange-600 rounded-full mb-2" />
+      {message && (
+        <p className={`mb-2 ${bg} text-center text-white rounded-lg font-bold p-0.5`}>{message}</p>
+      )}
       <div className="show-info flex flex-col gap-5 h-full">
         {movie && (
           <div className="movie grid grid-cols-[auto_1fr] fr grid-rows-4">

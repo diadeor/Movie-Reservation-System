@@ -89,7 +89,6 @@ export const addShow = async (req, res, next) => {
       prisma.shows.create({ data: show }),
       prisma.movies.update({ where: { id: movie_id }, data: { status: "active" } }),
     ]);
-    console.log({ newShow });
     return res.json({
       success: true,
       message: "New show created",
@@ -106,23 +105,32 @@ export const updateShow = async (req, res, next) => {
     const { id } = req.params;
 
     const providedTimeStamp = new Date(`${date}T${time}`);
-    const currentTimeStamp = new Date().getTime();
-
-    if (currentTimeStamp > providedTimeStamp) throwError("Invalid time & date", 400);
+    const currentTimeStamp = new Date();
 
     const showExists = await prisma.shows.findUnique({ where: { id: +id } });
-
     if (!showExists) throwError("Show does not exist", 404);
 
+    const { date: showDate, time: showTime, price: showPrice, status: showStatus } = showExists;
+    const noChangesMade = date === showDate && time === showTime && price === showPrice;
+    const statusChanged = showStatus === status ? false : true;
+    const statusChangeOnly = noChangesMade ? true : false;
+
+    !statusChanged && noChangesMade && throwError("No changes made");
+
+    if (statusChangeOnly && status === "upcoming") throwError("Invalid time", 400);
+    if (!statusChangeOnly && currentTimeStamp > providedTimeStamp) {
+      throwError("Invalid time", 400);
+    }
     const { movie_id } = showExists;
 
     const updatedShow = await prisma.shows.update({
       where: { id: +id },
-      data: { date, time, price: +price, status },
+      data: statusChangeOnly ? { status } : { date, time, price: +price, status },
     });
     const now = new Date();
     const currentDateStr = now.toLocaleDateString("en-CA");
     const currentTimeStr = now.toLocaleTimeString("en-GB", { hour12: false });
+
     await prisma.shows.updateMany({
       where: {
         status: "upcoming",
@@ -144,7 +152,7 @@ export const updateShow = async (req, res, next) => {
 
     return res.json({
       success: true,
-      message: "Show information updated",
+      message: `Show ${statusChangeOnly ? "status" : "information"} updated.`,
       show: { ...updatedShow },
     });
   } catch (error) {
