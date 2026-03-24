@@ -58,7 +58,7 @@ const Admin = () => {
     <>
       {isAdmin && (
         <div className="flex flex-col items-center admin-container w-full h-[calc(100svh-160px)] font-poppins max-w-6xl text-orange-200">
-          <div className="top-row w-full flex flex-row items-center justify-between mb-4 px-3">
+          <div className="top-row w-full flex flex-row items-center justify-between mb-4 px-2">
             <p className="text-2xl font-bold bg-clip-text bg-linear-to-r text-transparent from-red-500 to-yellow-500">
               Howdy, {name.split(" ")[0]}
             </p>
@@ -69,7 +69,7 @@ const Admin = () => {
             onValueChange={setActiveTab}
             className="items-center h-full w-full"
           >
-            <TabsList className="bg-orange-950">
+            <TabsList className="bg-orange-950 p-1.5">
               {adminTabs.map((tab, index) => {
                 return (
                   <TabsTrigger value={tab.title.toLowerCase()} key={index}>

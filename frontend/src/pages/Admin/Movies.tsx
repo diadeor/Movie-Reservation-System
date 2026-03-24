@@ -8,6 +8,7 @@ const Movies = () => {
       const { title, genre, poster, released, director, runtime, cast, status } = movie;
       const castList = cast.split(", ");
       const year = new Date(released).getFullYear();
+      const color = status === "active" ? "text-green-300" : "text-rose-300";
       return (
         <li className="bg-[#681d0c] p-3 rounded-md flex flex-row gap-3" key={index}>
           <div className="first-column">
@@ -24,13 +25,7 @@ const Movies = () => {
                   {castList[0]}, {castList[1]}
                 </p>
               </div>
-              <p
-                className={`uppercase font-bold ${
-                  status === "active" ? "text-green-300" : "text-red-200"
-                }`}
-              >
-                {status}
-              </p>
+              <p className={`uppercase font-bold ${color}`}>{status}</p>
             </div>
             <div className="two flex flex-row gap-2 w-full font-jetbrains">
               <p className="direct flex flex-col bg-orange-950 p-2 grow rounded-md flex-1">

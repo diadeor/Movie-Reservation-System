@@ -5,6 +5,13 @@ const AuthContext: any = createContext("");
 
 export const useAuthContext: any = () => useContext(AuthContext);
 
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+};
+
 const AuthProvider = ({ children }: { children: ReactElement }) => {
   const fetchUserUrl = "http://localhost:5000/api/users/me";
   const [loading, setLoading] = useState(true);

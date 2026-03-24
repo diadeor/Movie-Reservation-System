@@ -76,7 +76,7 @@ const Tickets = () => {
 
               return (
                 <li
-                  className="flex text-center hover:scale-96 transition-all flex-col gap-2 p-2 bg-orange-900 rounded-sm"
+                  className="flex text-center hover:scale-97 cursor-pointer transition-all flex-col gap-2 p-2 bg-orange-900 rounded-sm"
                   key={index}
                 >
                   <div className="flex flex-row justify-between items-center">

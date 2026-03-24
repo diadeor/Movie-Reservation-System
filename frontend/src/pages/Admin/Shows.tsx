@@ -10,6 +10,12 @@ const Shows = ({ setTab, edit }: { setTab?: any; edit: any }) => {
       const filled = (((50 - available_seats.length) / 50) * 100).toFixed(0);
       const movie = movies.find((movie: Movie) => movie.id === movie_id);
       const { title, poster } = movie;
+      const statusBackground =
+        status === "expired"
+          ? "bg-blue-900"
+          : status === "cancelled"
+            ? "bg-red-900"
+            : "bg-green-900";
       return (
         <li
           className="bg-[#681d0c] p-3 rounded-md flex flex-row gap-3 font-poppins hover:scale-97 transition"
@@ -39,10 +45,12 @@ const Shows = ({ setTab, edit }: { setTab?: any; edit: any }) => {
               </p>
             </div>
             <div className="flex flex-row gap-2 w-full">
-              <p className="status flex-1 bg-orange-950 p-2 mt-2 rounded-md font-bold font-jetbrains uppercase">
+              <p
+                className={`status flex-1/4 ${statusBackground} p-1 px-4 flex items-center justify-center mt-2 rounded-full font-bold font-jetbrains uppercase`}
+              >
                 {status}
               </p>
-              <p className="status flex-1 bg-orange-950 p-2 mt-2 rounded-md font-bold font-jetbrains uppercase">
+              <p className="status flex-3/4 bg-orange-950 p-2 mt-2 rounded-md font-bold font-jetbrains uppercase">
                 {filled}% filled
               </p>
             </div>
