@@ -53,6 +53,7 @@ export const signUp = async (req, res, next) => {
       name,
       role: "user",
     };
+
     const newUser = await prisma.users.create({ data: user });
 
     const { id, role } = newUser;
@@ -96,4 +97,33 @@ export const signOut = async (req, res, next) => {
   }
 };
 
-// export const changePass = async(req, res, next);
+export const changePass = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const { current, newPassword } = req.body;
+    if (!current || !newPassword) throwError("Current & New Password Required.");
+    const user = await prisma.users.findUnique({ where: { id: +id } });
+
+    const { password } = user;
+    const isValid = await bcrypt.compare(current, password);
+    if (!isValid) throwError("Invalid Password !!");
+
+    console.log(req.body);
+    const salt = await bcrypt.genSalt(12);
+    const passHash = await bcrypt.hash(newPassword, salt);
+
+    const updatedUser = await prisma.users.update({
+      where: { id: +id },
+      data: { password: passHash },
+      select: { id: true, role: true, email: true, name: true },
+    });
+
+    return res.json({
+      success: true,
+      user: updatedUser,
+      message: "Password Changed Successfully.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};

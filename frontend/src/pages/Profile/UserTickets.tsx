@@ -1,5 +1,5 @@
 import { useShowContext, type Movie, type Show, type Ticket } from "@/contexts/ShowsContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { Tickets } from "lucide-react";
 
@@ -8,11 +8,14 @@ const UserTickets = ({ userId }: { userId: number }) => {
   const { movies, shows } = useShowContext();
   const ticketsReq = useFetch();
 
-  (async () => {
-    const ticketsUrl = `http://localhost:5000/api/tickets/user/${userId}`;
-    const { data, error } = await ticketsReq(ticketsUrl);
-    if (!error) setTickets(data.tickets);
-  })();
+  useEffect(() => {
+    (async () => {
+      const ticketsUrl = `http://localhost:5000/api/tickets/user/${userId}`;
+      const { data, error } = await ticketsReq(ticketsUrl);
+      if (!error) setTickets(data.tickets);
+    })();
+  }, []);
+
   return (
     <div className="area flex flex-col gap-3 p-5 pr-3 rounded-md m-0.5 bg-orange-950 max-h-200 flex-1">
       <p className="title flex flex-row gap-2 items-center uppercase tracking-wider text-md font-bold">
@@ -24,7 +27,6 @@ const UserTickets = ({ userId }: { userId: number }) => {
           tickets.map((ticket, index) => {
             // console.log(ticket);
             const { show, seats, grand_total, id } = ticket;
-            console.log(seats);
             // const
             const givenShow: Show = shows.find((item: Show) => item.id === show);
             const { movie_id, time, date } = givenShow;

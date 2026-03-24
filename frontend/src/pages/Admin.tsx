@@ -62,7 +62,7 @@ const Admin = () => {
             <p className="text-2xl font-bold bg-clip-text bg-linear-to-r text-transparent from-red-500 to-yellow-500">
               Howdy, {name.split(" ")[0]}
             </p>
-            <Link to={`/profile`}>Go to Profile</Link>
+            <Link to={`/profile`}>Go to Profile {`>`}</Link>
           </div>
           <Tabs
             value={activeTab}
