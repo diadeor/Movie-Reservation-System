@@ -1,18 +1,12 @@
 import useFetch from "@/hooks/useFetch";
 import { useEffect, useState } from "react";
-import { useShowContext, type Show, type Movie, type User } from "@/contexts/ShowsContext";
-
-type Ticket = {
-  id: number;
-  discount: number;
-  grand_total: number;
-  number_of_seats: number;
-  seats: string[];
-  show: number;
-  status: string;
-  total: number;
-  user: number;
-};
+import {
+  useShowContext,
+  type Show,
+  type Movie,
+  type User,
+  type Ticket,
+} from "@/contexts/ShowsContext";
 
 const Tickets = () => {
   const [tickets, setTickets] = useState();
@@ -68,28 +62,37 @@ const Tickets = () => {
               className="flex font-bold text-center flex-row p-1 pt-0 rounded-md bg-orange-950"
               key={`title`}
             >
-              <p className="flex-1/8">ID</p>
-              <p className="flex-3/8">Name</p>
-              <p className="flex-2/8">Status</p>
-              <p className="flex-2/8">Seats</p>
+              <p className="flex-3/12">
+                ID <span className="text-xs">/ Name</span>
+              </p>
+              <p className="flex-5/12">Seats</p>
+              <p className="flex-3/12">Status</p>
+              <p className="flex-3/12">Amt</p>
             </li>
             {current.map((element, index) => {
-              const { id, status, seats, total, discount, grand_total } = element;
+              const { id, status, seats, grand_total } = element;
               const seatsDisjointed = seats.join(", ");
               const { name } = users.filter((user: User) => user.id === element.user)[0];
 
               return (
                 <li
-                  className="flex text-center flex-col gap-2 p-2 bg-orange-900 rounded-sm"
+                  className="flex text-center hover:scale-96 transition-all flex-col gap-2 p-2 bg-orange-900 rounded-sm"
                   key={index}
                 >
-                  <div className="flex flex-row">
-                    <p className="flex-1/10 font-bold "># {id}</p>
-                    <p className="flex-4/10">{name}</p>
-                    <p className="flex-2/10">{status}</p>
-                    <p className="flex-3/10">[{seatsDisjointed}]</p>
+                  <div className="flex flex-row justify-between items-center">
+                    <p className="flex-3/12 flex flex-col">
+                      <span className="font-bold"># {id}</span>
+                      <span className="text-xs">{name}</span>
+                    </p>
+                    <p className="flex-5/12 uppercase">{seatsDisjointed}</p>
+                    <p
+                      className={`flex-3/12 px-2 rounded-full flex flex-row items-center justify-center text-center text-sm ${status === "unpaid" ? "bg-rose-500/60 text-rose-200" : "bg-green-500/60 text-green-200"}`}
+                    >
+                      {status}
+                    </p>
+                    <p className="flex-3/12">Rs. {grand_total}</p>
                   </div>
-                  <div className="flex flex-row gap-2">
+                  {/* <div className="flex flex-row gap-2">
                     <span className="amt grow flex flex-col w-20 bg-orange-800 rounded-sm ">
                       <span className="text-yellow-500 text-center">Amt.</span>{" "}
                       <span className="font-bold text-center">Rs. {total}</span>
@@ -102,7 +105,7 @@ const Tickets = () => {
                       <span className="text-yellow-500 text-center">Total</span>{" "}
                       <span className="font-bold text-center">Rs. {grand_total}</span>
                     </span>
-                  </div>
+                  </div> */}
                 </li>
               );
             })}

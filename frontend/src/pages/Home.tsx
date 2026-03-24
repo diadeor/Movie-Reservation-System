@@ -16,13 +16,7 @@ const Home = () => {
       const selectedDateTimeStamp = new Date(selectedDate).getTime();
       const showExists = showDateTimeStamp === selectedDateTimeStamp;
       // console.log(today);
-      if (showExists) {
-        // const currentTimeStamp = new Date().getTime();
-        // const showTimeStamp = new Date(`${item.date}T${item.time}`).getTime();
-        return true;
-      } else {
-        return false;
-      }
+      return showExists ? true : false;
     });
     const movieIdOnly = tempShows.map((item: Show) => item.movie_id);
     const tempMovies = movies.filter((item: Movie) => movieIdOnly.includes(item.id));

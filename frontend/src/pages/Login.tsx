@@ -41,8 +41,10 @@ export default function Login() {
       setError("");
       const { data, error: err } = await loginSignUpRequest(creds);
       if (data && data.success && !err) {
+        const { role } = data.user;
+
         setUser(data.user);
-        nav("/admin");
+        nav(role === "admin" ? "/admin" : "/profile");
       } else if (err) setError(err);
     }
   };

@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { type Show } from "@/contexts/ShowsContext";
 import EditShows from "@/components/Admin/EditShows";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Admin = () => {
   const [count, setCount] = useState(5);
@@ -58,9 +58,12 @@ const Admin = () => {
     <>
       {isAdmin && (
         <div className="flex flex-col items-center admin-container w-full h-[calc(100svh-160px)] font-poppins max-w-6xl text-orange-200">
-          <p className="text-2xl font-bold mb-5 bg-clip-text bg-linear-to-r text-transparent from-red-500 to-yellow-500">
-            Howdy, {name.split(" ")[0]}
-          </p>
+          <div className="top-row w-full flex flex-row items-center justify-between mb-4 px-3">
+            <p className="text-2xl font-bold bg-clip-text bg-linear-to-r text-transparent from-red-500 to-yellow-500">
+              Howdy, {name.split(" ")[0]}
+            </p>
+            <Link to={`/profile`}>Go to Profile</Link>
+          </div>
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}

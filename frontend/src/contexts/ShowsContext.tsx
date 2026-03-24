@@ -34,6 +34,18 @@ export type User = {
   id: number;
 };
 
+export type Ticket = {
+  id: number;
+  discount: number;
+  grand_total: number;
+  number_of_seats: number;
+  seats: string[];
+  show: number;
+  status: string;
+  total: number;
+  user: number;
+};
+
 export const ShowContext: any = createContext("");
 
 export const useShowContext: any = () => useContext(ShowContext);
