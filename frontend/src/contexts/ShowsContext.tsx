@@ -64,7 +64,7 @@ const ShowProvider = ({ children }: { children: ReactElement }) => {
       try {
         const req1 = getRequest(`${baseUrl}/movies`);
         const req2 = getRequest(`${baseUrl}/shows`);
-        const req3 = getRequest(`${baseUrl}/users`);
+        // const req3 = getRequest(`${baseUrl}/users`);
 
         // Parallel request
         if (user) {
@@ -77,14 +77,14 @@ const ShowProvider = ({ children }: { children: ReactElement }) => {
               data: { shows },
               error: err,
             },
-            {
-              data: { users },
-              error: userErr,
-            },
-          ] = await Promise.all([req1, req2, req3]);
+            // {
+            //   data: { users },
+            //   error: userErr,
+            // },
+          ] = await Promise.all([req1, req2]);
           if (!error && movies) setMovies(movies);
           if (!err && shows) setShows(shows);
-          if (!userErr && users) setUsers(users);
+          // if (!userErr && users) setUsers(users);
         } else {
           const [
             {
@@ -109,9 +109,7 @@ const ShowProvider = ({ children }: { children: ReactElement }) => {
   }, [user]);
 
   return (
-    <ShowContext.Provider value={{ movies, shows, users }}>
-      {!loading && children}
-    </ShowContext.Provider>
+    <ShowContext.Provider value={{ movies, shows }}>{!loading && children}</ShowContext.Provider>
   );
 };
 

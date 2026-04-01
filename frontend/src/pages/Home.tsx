@@ -48,7 +48,10 @@ const Home = () => {
               );
             })}
           {filteredMovies?.length === 0 && (
-            <p className="border-2 gap-2 h-50 w-full flex flex-row items-center justify-center rounded-md border-orange-700 text-orange-600 text-xl col-span-full">
+            <p
+              className="border-2 gap-2 h-50 w-full flex flex-row items-center justify-center
+            rounded-md border-orange-700 text-orange-600 text-xl col-span-full"
+            >
               <Info />
               No shows for this date
             </p>

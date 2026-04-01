@@ -19,7 +19,7 @@ export default function Login() {
   // let interval: number;
 
   useEffect(() => {
-    user && nav("/admin");
+    user && nav("/profile");
   }, [user]);
 
   const handleUser = async (e: any) => {
