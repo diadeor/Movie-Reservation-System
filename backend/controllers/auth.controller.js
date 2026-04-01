@@ -9,11 +9,12 @@ export const signIn = async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) throwError("Email & Password is required...", 400);
 
-    const userExists = await prisma.users.findUnique({ where: { email } });
+    const userExists = await prisma.user.findUnique({ where: { email } });
     if (!userExists) throwError("Invalid email or password", 400);
 
     const passValid = await bcrypt.compare(password, userExists.password);
     const { id, role, name } = userExists;
+    console.log(userExists);
 
     if (passValid) {
       const token = jwt.sign({ id, role }, JWT_SECRET, { expiresIn: JWT_EXPIRE });
@@ -42,7 +43,7 @@ export const signUp = async (req, res, next) => {
     if (!name || !email || !password)
       throwError("Required fields are not provided. [name, email, password] is required", 400);
 
-    const userExists = await prisma.users.findUnique({ where: { email } });
+    const userExists = await prisma.user.findUnique({ where: { email } });
     if (userExists) throwError("Email already exists", 400);
 
     const salt = await bcrypt.genSalt(12);
@@ -51,10 +52,9 @@ export const signUp = async (req, res, next) => {
       email,
       password: passwordHash,
       name,
-      role: "user",
     };
 
-    const newUser = await prisma.users.create({ data: user });
+    const newUser = await prisma.user.create({ data: user });
 
     const { id, role } = newUser;
     const token = jwt.sign({ id, role }, JWT_SECRET, { expiresIn: JWT_EXPIRE });
@@ -102,7 +102,7 @@ export const changePass = async (req, res, next) => {
     const { id } = req.user;
     const { current, newPassword } = req.body;
     if (!current || !newPassword) throwError("Current & New Password Required.");
-    const user = await prisma.users.findUnique({ where: { id: +id } });
+    const user = await prisma.user.findUnique({ where: { id: +id } });
 
     const { password } = user;
     const isValid = await bcrypt.compare(current, password);
@@ -112,7 +112,7 @@ export const changePass = async (req, res, next) => {
     const salt = await bcrypt.genSalt(12);
     const passHash = await bcrypt.hash(newPassword, salt);
 
-    const updatedUser = await prisma.users.update({
+    const updatedUser = await prisma.user.update({
       where: { id: +id },
       data: { password: passHash },
       select: { id: true, role: true, email: true, name: true },

@@ -119,5 +119,4 @@ enum ticket_status {
 enum user_role {
   customer
   admin
-  superadmin
 }

@@ -3,7 +3,7 @@ import throwError from "../config/err.js";
 
 export const getTickets = async (req, res, next) => {
   try {
-    const tickets = await prisma.tickets.findMany({
+    const tickets = await prisma.ticket.findMany({
       orderBy: {
         id: "desc",
       },
@@ -28,10 +28,10 @@ export const getTicketsByUser = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const userExists = await prisma.users.findUnique({ where: { id: +id } });
+    const userExists = await prisma.user.findUnique({ where: { id: +id } });
     if (!userExists) throwError("User does not exist", 400);
 
-    const tickets = await prisma.tickets.findMany({
+    const tickets = await prisma.ticket.findMany({
       where: { user: +id },
       orderBy: { createdAt: "desc" },
     });
@@ -48,7 +48,7 @@ export const getTicketsByUser = async (req, res, next) => {
 export const getTicket = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const ticket = await prisma.tickets.findUnique({ where: { id: +id } });
+    const ticket = await prisma.ticket.findUnique({ where: { id: +id } });
     if (!ticket) throwError("No ticket with such id", 404);
 
     return res.json({
@@ -65,7 +65,7 @@ export const createTicket = async (req, res, next) => {
     const { id } = req.user;
     const { seats, show } = req.body;
 
-    const showExists = await prisma.shows.findUnique({ where: { id: show } });
+    const showExists = await prisma.show.findUnique({ where: { id: show } });
     if (!showExists) throwError("Show does not exist", 404);
 
     const ticketObj = {
@@ -78,14 +78,14 @@ export const createTicket = async (req, res, next) => {
     const available_seats = showExists.available_seats.filter((item) => !seats.includes(item));
 
     const [shows, tickets] = await prisma.$transaction([
-      prisma.shows.update({
+      prisma.show.update({
         where: { id: show },
         data: {
           reserved_seats: [...showExists.reserved_seats, ...seats],
           available_seats,
         },
       }),
-      prisma.tickets.create({ data: ticketObj }),
+      prisma.ticket.create({ data: ticketObj }),
     ]);
 
     console.log(shows, tickets);

@@ -6,7 +6,7 @@ export const getUsers = async (req, res, next) => {
     const { id, role } = req.user;
 
     if (role !== "admin") throwError("Unauthorized, must be an admin to access this route", 401);
-    const users = await prisma.users.findMany({
+    const users = await prisma.user.findMany({
       select: {
         id: true,
         name: true,
@@ -31,7 +31,7 @@ export const getUser = async (req, res, next) => {
 
     if (role !== "admin") throwError("Unauthorized, must be an admin to access this route", 401);
 
-    const user = await prisma.users.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: +id },
       select: { id: true, name: true, email: true, role: true },
     });
@@ -49,8 +49,8 @@ export const getUser = async (req, res, next) => {
 export const getCurrentUser = async (req, res, next) => {
   try {
     const { id } = req.user;
-    const user = await prisma.users.findUnique({
-      where: { id: +id },
+    const user = await prisma.user.findUnique({
+      where: { id: id },
       select: { id: true, name: true, email: true, role: true },
     });
 
@@ -69,7 +69,7 @@ export const editUser = async (req, res, next) => {
     const { name, email } = req.body;
     if (!name && !email) throwError("Either name or email address is required", 400);
 
-    const user = await prisma.users.findUnique({ where: { id: +id } });
+    const user = await prisma.user.findUnique({ where: { id: +id } });
     const { name: userName, email: userMail } = user;
     const updates = { name: false, email: false };
 
@@ -84,7 +84,7 @@ export const editUser = async (req, res, next) => {
     const bothChanges = updates["name"] && updates["email"];
 
     if (!updates["name"] && !updates["email"]) throwError("No changes made", 400);
-    const updatedUser = await prisma.users.update({
+    const updatedUser = await prisma.user.update({
       where: { id: +id },
       data: bothChanges ? { email, name } : updates["name"] ? { name } : { email },
       select: { id: true, name: true, email: true, role: true },

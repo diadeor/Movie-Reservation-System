@@ -4,7 +4,7 @@ import throwError from "../config/err.js";
 
 export const getMovies = async (req, res, next) => {
   try {
-    const movies = await prisma.movies.findMany({});
+    const movies = await prisma.movie.findMany({});
     return res.json({
       success: true,
       movies,
@@ -15,7 +15,7 @@ export const getMovies = async (req, res, next) => {
 };
 export const getActiveMovies = async (req, res, next) => {
   try {
-    const movies = await prisma.movies.findMany({
+    const movies = await prisma.movie.findMany({
       where: {
         status: "active",
       },
@@ -31,7 +31,7 @@ export const getActiveMovies = async (req, res, next) => {
 export const getMovie = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const movie = await prisma.movies.findUnique({ where: { id: +id } });
+    const movie = await prisma.movie.findUnique({ where: { id: +id } });
 
     if (!movie) throwError("No movie with that id", 404);
 
@@ -48,7 +48,7 @@ export const updateStatus = async (req, res, next) => {
     const { id } = req.params;
     const okay = req.query;
     console.log({ okay, id });
-    const movie = await prisma.movies.findUnique({ where: { id: +id } });
+    const movie = await prisma.movie.findUnique({ where: { id: +id } });
 
     if (!movie) throwError("No movie with that id", 404);
 
@@ -62,7 +62,7 @@ export const updateStatus = async (req, res, next) => {
 };
 export const getMoviesName = async (req, res, next) => {
   try {
-    const movies = await prisma.movies.findMany({
+    const movies = await prisma.movie.findMany({
       select: {
         id: true,
         title: true,
@@ -88,7 +88,7 @@ export const addMovie = async (req, res, next) => {
 
     if (movie.Response === "False") throwError(movie.Error, 400);
 
-    const alreadyExists = await prisma.movies.findUnique({
+    const alreadyExists = await prisma.movie.findUnique({
       where: {
         imdbID,
       },
@@ -115,7 +115,7 @@ export const addMovie = async (req, res, next) => {
       poster: movie.Poster,
       status: "inactive",
     };
-    const newMovie = await prisma.movies.create({
+    const newMovie = await prisma.movie.create({
       data: movieObject,
     });
     console.log({ newMovie });

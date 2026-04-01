@@ -3,7 +3,7 @@ import throwError from "../config/err.js";
 
 export const getShows = async (req, res, next) => {
   try {
-    const shows = await prisma.shows.findMany({});
+    const shows = await prisma.show.findMany({});
 
     return res.json({
       success: true,
@@ -18,7 +18,7 @@ export const getShow = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const show = await prisma.shows.findUnique({ where: { id } });
+    const show = await prisma.show.findUnique({ where: { id } });
 
     if (!show) throwError("Show doesn't exist", 404);
 
@@ -34,11 +34,11 @@ export const getShowByMovie = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const movieExists = await prisma.movies.findUnique({ where: { id } });
+    const movieExists = await prisma.movie.findUnique({ where: { id } });
 
     if (!movieExists) throwError("Movie doesn't exist", 404);
 
-    const shows = await prisma.shows.findMany({ where: { movie_id: +id } });
+    const shows = await prisma.show.findMany({ where: { movie_id: +id } });
 
     return res.json({
       success: true,
@@ -56,10 +56,10 @@ export const addShow = async (req, res, next) => {
 
     console.log({ show });
 
-    const movieExists = await prisma.movies.findUnique({ where: { id: movie_id } });
+    const movieExists = await prisma.movie.findUnique({ where: { id: movie_id } });
     if (!movieExists) throwError("Movie doesn't exist", 404);
 
-    const alreadyExists = await prisma.shows.findFirst({
+    const alreadyExists = await prisma.show.findFirst({
       where: {
         date,
         time,
@@ -73,7 +73,7 @@ export const addShow = async (req, res, next) => {
     const currentDateStr = now.toLocaleDateString("en-CA");
     const currentTimeStr = now.toLocaleTimeString("en-GB", { hour12: false });
 
-    await prisma.shows.updateMany({
+    await prisma.show.updateMany({
       where: {
         status: "upcoming",
         movie_id,
@@ -86,8 +86,8 @@ export const addShow = async (req, res, next) => {
     });
 
     const newShow = await prisma.$transaction([
-      prisma.shows.create({ data: show }),
-      prisma.movies.update({ where: { id: movie_id }, data: { status: "active" } }),
+      prisma.show.create({ data: show }),
+      prisma.movie.update({ where: { id: movie_id }, data: { status: "active" } }),
     ]);
     return res.json({
       success: true,
@@ -107,7 +107,7 @@ export const updateShow = async (req, res, next) => {
     const providedTimeStamp = new Date(`${date}T${time}`);
     const currentTimeStamp = new Date();
 
-    const showExists = await prisma.shows.findUnique({ where: { id: +id } });
+    const showExists = await prisma.show.findUnique({ where: { id: +id } });
     if (!showExists) throwError("Show does not exist", 404);
 
     const { date: showDate, time: showTime, price: showPrice, status: showStatus } = showExists;
@@ -123,7 +123,7 @@ export const updateShow = async (req, res, next) => {
     }
     const { movie_id } = showExists;
 
-    const updatedShow = await prisma.shows.update({
+    const updatedShow = await prisma.show.update({
       where: { id: +id },
       data: statusChangeOnly ? { status } : { date, time, price: +price, status },
     });
@@ -131,7 +131,7 @@ export const updateShow = async (req, res, next) => {
     const currentDateStr = now.toLocaleDateString("en-CA");
     const currentTimeStr = now.toLocaleTimeString("en-GB", { hour12: false });
 
-    await prisma.shows.updateMany({
+    await prisma.show.updateMany({
       where: {
         status: "upcoming",
         movie_id,
@@ -143,12 +143,12 @@ export const updateShow = async (req, res, next) => {
       data: { status: "expired" },
     });
 
-    const shows = await prisma.shows.findMany({
+    const shows = await prisma.show.findMany({
       where: { status: "upcoming", movie_id },
     });
 
     !shows.length &&
-      (await prisma.movies.update({ where: { id: movie_id }, data: { status: "inactive" } }));
+      (await prisma.movie.update({ where: { id: movie_id }, data: { status: "inactive" } }));
 
     return res.json({
       success: true,
