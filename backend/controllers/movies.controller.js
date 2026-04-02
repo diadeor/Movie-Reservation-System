@@ -1,6 +1,7 @@
 import prisma from "../config/db.js";
 import axios from "axios";
 import throwError from "../config/err.js";
+import { OMDB_API } from "../config/env.js";
 
 export const getMovies = async (req, res, next) => {
   try {
@@ -31,7 +32,7 @@ export const getActiveMovies = async (req, res, next) => {
 export const getMovie = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const movie = await prisma.movie.findUnique({ where: { id: +id } });
+    const movie = await prisma.movie.findUnique({ where: { id } });
 
     if (!movie) throwError("No movie with that id", 404);
 
@@ -48,7 +49,7 @@ export const updateStatus = async (req, res, next) => {
     const { id } = req.params;
     const okay = req.query;
     console.log({ okay, id });
-    const movie = await prisma.movie.findUnique({ where: { id: +id } });
+    const movie = await prisma.movie.findUnique({ where: { id } });
 
     if (!movie) throwError("No movie with that id", 404);
 
@@ -83,7 +84,7 @@ export const getMoviesName = async (req, res, next) => {
 export const addMovie = async (req, res, next) => {
   try {
     const { imdbID, language } = req.body;
-    const url = `https://www.omdbapi.com/?apikey=f9c86c81&i=${imdbID}`;
+    const url = `https://www.omdbapi.com/?apikey=${OMDB_API}&i=${imdbID}`;
     const { data: movie } = await axios.get(url);
 
     if (movie.Response === "False") throwError(movie.Error, 400);

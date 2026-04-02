@@ -10,6 +10,7 @@ import authRouter from "./routes/auth.routes.js";
 import ErrorMiddleware from "./middlewares/error.middleware.js";
 import authorizeUser from "./middlewares/auth.middleware.js";
 import ticketRouter from "./routes/tickets.route.js";
+import seatRouter from "./routes/seats.routes.js";
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use("/api/movies", movieRouter);
 app.use("/api/shows", showRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/tickets", authorizeUser, ticketRouter);
+app.use("/api/seats", authorizeUser, seatRouter);
 
 // Error middleware
 app.use(ErrorMiddleware);

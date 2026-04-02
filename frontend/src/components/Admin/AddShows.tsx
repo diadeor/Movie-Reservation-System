@@ -37,9 +37,6 @@ const AddShow = () => {
     time,
     price: 0,
     movie_id: 0,
-    available_seats: ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10"],
-    reserved_seats: [],
-    status: "upcoming",
   });
 
   useEffect(() => {
@@ -107,7 +104,7 @@ const AddShow = () => {
             )}
             <ChevronDown className="mr-2" size={`1em`} />
             {showSelectMenu && (
-              <ul className="movies z-10 absolute top-20 h-73 overflow-y-scroll bg-white p-1 flex flex-col gap-1 rounded-md border w-full left-0">
+              <ul className="movies z-10 absolute top-20 max-h-73 overflow-y-scroll bg-white p-1 flex flex-col gap-1 rounded-md border w-full left-0">
                 {movieList &&
                   movieList.map((item, index) => {
                     return (

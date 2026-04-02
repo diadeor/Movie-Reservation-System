@@ -38,7 +38,7 @@ export const getShowByMovie = async (req, res, next) => {
 
     if (!movieExists) throwError("Movie doesn't exist", 404);
 
-    const shows = await prisma.show.findMany({ where: { movie_id: +id } });
+    const shows = await prisma.show.findMany({ where: { movie_id: id } });
 
     return res.json({
       success: true,
@@ -52,7 +52,7 @@ export const getShowByMovie = async (req, res, next) => {
 export const addShow = async (req, res, next) => {
   try {
     const { show } = req.body;
-    const { date, time, price, status, available_seats, reserved_seats, movie_id } = show;
+    const { date, time, price, status, movie_id } = show;
 
     console.log({ show });
 
@@ -85,8 +85,22 @@ export const addShow = async (req, res, next) => {
       data: { status: "expired" },
     });
 
+    const generateSeats = (cols) => {
+      const columns = cols ? cols : 10;
+      const seats = [];
+      for (let x of ["A", "B", "C", "D", "E"]) {
+        for (let y = 1; y <= columns; y++) {
+          const temp = {
+            seat_number: `${x}${y}`,
+          };
+          seats.push(temp);
+        }
+      }
+      return seats;
+    };
+
     const newShow = await prisma.$transaction([
-      prisma.show.create({ data: show }),
+      prisma.show.create({ data: { ...show, Seat: { createMany: { data: generateSeats(10) } } } }),
       prisma.movie.update({ where: { id: movie_id }, data: { status: "active" } }),
     ]);
     return res.json({

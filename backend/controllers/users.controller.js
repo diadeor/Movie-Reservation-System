@@ -3,16 +3,12 @@ import throwError from "../config/err.js";
 
 export const getUsers = async (req, res, next) => {
   try {
-    const { id, role } = req.user;
+    const { role } = req.user;
 
     if (role !== "admin") throwError("Unauthorized, must be an admin to access this route", 401);
+
     const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-      },
+      include: { password: false, created_at: false },
     });
 
     return res.json({
@@ -32,8 +28,8 @@ export const getUser = async (req, res, next) => {
     if (role !== "admin") throwError("Unauthorized, must be an admin to access this route", 401);
 
     const user = await prisma.user.findUnique({
-      where: { id: +id },
-      select: { id: true, name: true, email: true, role: true },
+      where: { id },
+      include: { password: false, created_at: false },
     });
     if (!user) throwError("User not found", 401);
 
@@ -50,8 +46,8 @@ export const getCurrentUser = async (req, res, next) => {
   try {
     const { id } = req.user;
     const user = await prisma.user.findUnique({
-      where: { id: id },
-      select: { id: true, name: true, email: true, role: true },
+      where: { id },
+      include: { password: false, created_at: false },
     });
 
     return res.json({
@@ -65,7 +61,7 @@ export const getCurrentUser = async (req, res, next) => {
 
 export const editUser = async (req, res, next) => {
   try {
-    const { id, role } = req.user;
+    const { id } = req.user;
     const { name, email } = req.body;
     if (!name && !email) throwError("Either name or email address is required", 400);
 
@@ -85,9 +81,9 @@ export const editUser = async (req, res, next) => {
 
     if (!updates["name"] && !updates["email"]) throwError("No changes made", 400);
     const updatedUser = await prisma.user.update({
-      where: { id: +id },
+      where: { id },
       data: bothChanges ? { email, name } : updates["name"] ? { name } : { email },
-      select: { id: true, name: true, email: true, role: true },
+      include: { password: false, created_at: false },
     });
 
     res.json({

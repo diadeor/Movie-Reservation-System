@@ -6,8 +6,8 @@ const Shows = ({ setTab, edit }: { setTab?: any; edit: any }) => {
   return (
     shows &&
     shows.map((show: Show, index: number) => {
-      const { movie_id, available_seats, status, date, time, price } = show;
-      const filled = (((50 - available_seats.length) / 50) * 100).toFixed(0);
+      const { movie_id, status, date, time, price } = show;
+      const filled = (((50 - 20) / 50) * 100).toFixed(0);
       const movie = movies.find((movie: Movie) => movie.id === movie_id);
       const { title, poster } = movie;
       const statusBackground =

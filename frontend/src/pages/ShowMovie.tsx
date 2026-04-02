@@ -5,7 +5,6 @@ import { useShowContext, type Movie, type Show } from "@/contexts/ShowsContext";
 
 const ShowMovie = () => {
   const { id } = useParams();
-  const movieId = id ? +id : 0;
   const { movies, shows } = useShowContext();
   const [movie, setMovie] = useState<Movie>();
   const [selectedDate, setSelectedDate] = useState(dates[0].value);
@@ -13,8 +12,8 @@ const ShowMovie = () => {
   // console.log(shows);
 
   useEffect(() => {
-    movies && setMovie(movies.find((item: Movie) => item.id === movieId));
-    const movieSpecificShows: Show[] = shows.filter((show: Show) => show.movie_id === movieId);
+    movies && setMovie(movies.find((item: Movie) => item.id === id));
+    const movieSpecificShows: Show[] = shows.filter((show: Show) => show.movie_id === id);
     for (let x of movieSpecificShows) {
       const movieTime = new Date(`${x.date}T${x.time}`);
       const currentTime = new Date();
@@ -47,7 +46,7 @@ const ShowMovie = () => {
 
   useEffect(() => {
     const showsTemp = shows?.filter(
-      (show: Show) => show.date === selectedDate && show.movie_id === movieId,
+      (show: Show) => show.date === selectedDate && show.movie_id === id,
     );
     setFilteredShows(showsTemp);
   }, [selectedDate, shows]);
