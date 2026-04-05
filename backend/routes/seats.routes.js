@@ -1,11 +1,12 @@
 import Router from "express";
-import { checkSeatStatus, getSeatsByShow, lockSeats } from "../controllers/seats.controller.js";
+import { getSeatsByShow, lockSeats } from "../controllers/seats.controller.js";
 import authorizeUser from "../middlewares/auth.middleware.js";
+import seatsUnlock from "../middlewares/seat.middleware.js";
 
 const seatRouter = Router();
 
-seatRouter.get("/:id", getSeatsByShow);
+seatRouter.get("/:id", seatsUnlock, getSeatsByShow);
 seatRouter.post("/lock", lockSeats);
-seatRouter.post("/check", checkSeatStatus);
+seatRouter.get("/check/:id", getSeatsByShow);
 
 export default seatRouter;

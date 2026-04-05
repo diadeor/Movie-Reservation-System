@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useShowContext, type Movie, type Show, type Seat } from "@/contexts/ShowsContext";
-import { CircleDollarSign } from "lucide-react";
+import { CircleDollarSign, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import usePost from "@/hooks/usePost";
@@ -19,12 +19,12 @@ const BookShow = () => {
 
   const [seats, setSeats] = useState<Seat[]>([]);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+  const [unavailable, setUnavailable] = useState<string[]>([]);
 
   const seatUrl = `http://localhost:5000/api/seats/${show.id}`;
   const seatReq = useFetch();
 
-  const checkSeatUrl = `http://localhost:5000/api/seats/check`;
-  const checkSeatReq = usePost(checkSeatUrl);
+  const checkUrl = `http://localhost:5000/api/seats/check/${show.id}`;
 
   const seatLockUrl = "http://localhost:5000/api/seats/lock";
   const seatLockReq = usePost(seatLockUrl);
@@ -37,35 +37,31 @@ const BookShow = () => {
     const getSeats = async () => {
       try {
         const { data, error } = await seatReq(seatUrl);
+        // console.log(data);
         if (!error) setSeats(data.seats);
       } catch (error) {
         console.log(error);
       }
     };
     getSeats();
-  }, [selectedSeats]);
+  }, []);
 
-  const addSeat = async (seat: string) => {
-    const alreadyExists = selectedSeats.includes(seat);
+  const addSeat = async (seat_num: string) => {
+    const alreadyExists = selectedSeats.includes(seat_num);
     if (!alreadyExists) {
-      setSelectedSeats([...selectedSeats, seat]);
-      const tempSeats = [...selectedSeats, seat];
+      setSelectedSeats([...selectedSeats, seat_num]);
 
-      const reqBody = {
-        show: show.id,
-        seats: tempSeats,
-      };
-      const { data, error } = await checkSeatReq(reqBody);
+      const { data, error } = await seatReq(checkUrl);
+
       if (!error) {
-        data.seats.map((seat: Seat) => {
-          const { seat_number, status: seat_status } = seat;
-          if (seat_status != "available") {
-            setSelectedSeats((prev) => prev.filter((item) => item != seat_number));
-          }
-        });
+        const { seats }: { seats: Seat[] } = data;
+        setSeats(seats);
+        const seat: Seat = seats.filter((seat) => seat.seat_number === seat_num)[0];
+        if (seat.status != "available")
+          setSelectedSeats((prev) => prev.filter((item) => item != seat_num));
       }
     } else {
-      setSelectedSeats((prev) => prev.filter((item) => item != seat));
+      setSelectedSeats((prev) => prev.filter((item) => item != seat_num));
     }
   };
 
@@ -73,7 +69,17 @@ const BookShow = () => {
     try {
       if (!show && !movie) return;
       const { data, error } = await seatLockReq({ seats: selectedSeats, show: show.id });
-      console.log(data, error);
+      if (!error) {
+        const { unavailable, updatedSeats } = data;
+        if (unavailable) {
+          setUnavailable(unavailable);
+          setSelectedSeats((prev) => prev.filter((item) => !unavailable.includes(item)));
+          setSeats(updatedSeats);
+        } else {
+          setSelectedSeats([]);
+          setSeats(updatedSeats);
+        }
+      }
     } catch (error) {
       console.log(error);
     }
@@ -82,6 +88,25 @@ const BookShow = () => {
   return (
     user && (
       <div className="flex flex-col items-center gap-5 w-full h-full">
+        {unavailable.length != 0 && (
+          <div className="z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-orange-900 p-3 rounded-md flex flex-col items-center">
+            <X
+              className="absolute top-3 right-3 hover:scale-120 transition-all cursor-pointer"
+              size={`1em`}
+              onClick={() => setUnavailable([])}
+            />
+            <p className="tracking-wider text-xl font-bold">Sorry,</p>
+            <p className="">{`These seats were just taken:`}</p>
+            <br />
+            <ul className="flex flex-row gap-1">
+              {unavailable.map((item) => (
+                <li className="bg-[#ccc] min-w-11 text-center text-black p-0.5 rounded-sm">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <p className=" text-2xl text-transparent bg-clip-text bg-linear-to-r from-red-500 to-yellow-500 font-semibold font-macondo tracking-widest uppercase">
           Book your seats
         </p>
@@ -108,7 +133,7 @@ const BookShow = () => {
         )}
         <hr className="border w-full border-orange-900 rounded-full max-w-220" />
         <div className="seats-container flex flex-col gap-5 max-w-220 w-full">
-          <p className="text-xl screen border-3 border-orange-900 w-full h-40 grow rounded-md bg-orange-900/50 flex items-center justify-center  uppercase tracking-wider font-bold">
+          <p className="text-lg screen border-2 rounded-t-full border-orange-900 w-full h-10 grow rounded-md bg-orange-900/50 flex items-center justify-center  uppercase tracking-wider font-bold">
             Screen
           </p>
           {show && (
@@ -135,6 +160,7 @@ const BookShow = () => {
                   >
                     {seat_number}
                   </Button>
+                  // <Armchair className={`uppercase ${bg} rounded-sm cursor-pointer transition-all hover:scale-95 hover:${bg}`}/>
                 );
               })}
             </div>

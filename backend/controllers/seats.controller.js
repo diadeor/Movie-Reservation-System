@@ -27,48 +27,55 @@ export const lockSeats = async (req, res, next) => {
     const { id } = req.user;
     const { show, seats } = req.body;
     if (!seats || !show) throwError("Show & seat info is required");
+    if (!Array.isArray(seats)) throwError("Seats must be an array !!");
+
+    console.log(req.body);
 
     const showExists = await prisma.show.findUnique({ where: { id: show } });
     if (!showExists) throwError("A show with that id doesn't exist.");
 
-    const lockedUntil = new Date(Date.now() + 15 * 60 * 1000);
+    const lockFor = new Date(Date.now() + 1 * 60 * 1000); // Lock for 1 min just for demo
 
-    const updatedSeats = await prisma.seat.updateMany({
-      where: { show_id: show, seat_number: { in: seats } },
-      data: { locked_by: id, status: "locked", locked_until: lockedUntil },
+    const findMatches = (
+      await prisma.seat.findMany({
+        where: {
+          show_id: show,
+          seat_number: { in: seats },
+          OR: [{ status: "available" }, { locked_until: { lt: new Date() } }],
+        },
+        select: { seat_number: true },
+      })
+    ).map((item) => item.seat_number);
+
+    const changeValid = findMatches.length === seats.length;
+
+    if (changeValid) {
+      await prisma.seat.updateMany({
+        where: {
+          show_id: show,
+          seat_number: { in: seats },
+          OR: [{ status: "available" }, { locked_until: { lt: new Date() } }],
+        },
+        data: { locked_by: id, status: "locked", locked_until: lockFor },
+      });
+    }
+
+    const unavailable = changeValid ? null : seats.filter((item) => !findMatches.includes(item));
+    const updatedSeats = await prisma.seat.findMany({ where: { show_id: show } });
+
+    const sortedSeats = updatedSeats.sort((a, b) => {
+      return a.seat_number.localeCompare(b.seat_number, undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
     });
 
-    return res.json({ success: true, updatedSeats });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const checkSeatStatus = async (req, res, next) => {
-  try {
-    const { id } = req.user;
-    const { show, seats } = req.body;
-    if (!seats || !show) throwError("Show & Seat info is required");
-
-    const showExists = await prisma.show.findUnique({ where: { id: show } });
-    if (!showExists) throwError("A show with that id doesn't exist");
-
-    await prisma.seat.updateMany({
-      where: {
-        show_id: show,
-        seat_number: { in: seats },
-        status: "locked",
-        locked_until: { lt: new Date() },
-      },
-      data: { status: "available", locked_by: null, locked_until: null },
+    return res.json({
+      success: true,
+      message: changeValid ? "Seats locked !!" : "One or more seats you chose is already taken.",
+      unavailable,
+      updatedSeats: sortedSeats,
     });
-
-    const updatedSeats = await prisma.seat.findMany({
-      where: { show_id: show, seat_number: { in: seats } },
-      select: { seat_number: true, status: true },
-    });
-
-    return res.json({ success: true, seats: updatedSeats });
   } catch (error) {
     next(error);
   }
