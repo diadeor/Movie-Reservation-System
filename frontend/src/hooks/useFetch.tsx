@@ -1,14 +1,14 @@
 import axios from "axios";
 
-const useFetch = (creds = true) => {
+const useFetch = (method: "get" | "delete" = "get") => {
   const getReq = async (url: string) => {
     try {
-      const { data: resp } = await axios.get(url, { withCredentials: creds });
+      const { data: resp } = await axios({ method, url, withCredentials: true });
       // console.log(resp);
       if (resp.success || resp.Response === "True") {
         return { data: resp, error: null };
       } else {
-        return { data: null, error: resp.message ? resp.message : resp.Error };
+        return { data: null, error: resp.message ?? resp.Error };
       }
     } catch (error) {
       return { data: null, error: "There has been an error" };

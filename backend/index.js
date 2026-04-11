@@ -17,7 +17,11 @@ const app = express();
 // cors
 app.use(
   cors({
-    origin: ["https://web-chat-virid-two.vercel.app", "http://localhost:5173"],
+    origin: [
+      "https://web-chat-virid-two.vercel.app",
+      "http://localhost:5173",
+      "http://192.168.1.103:5173",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),

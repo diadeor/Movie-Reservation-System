@@ -2,9 +2,9 @@ import InputLabel from "@/components/InputLabel";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import useFetch from "@/hooks/useFetch";
-import { type User } from "@/contexts/AuthContext";
+import { type User } from "@/contexts/ShowsContext";
 import { LogOut } from "lucide-react";
-import usePut from "@/hooks/usePut";
+import usePost from "@/hooks/useSendRequest";
 
 const Overview = ({
   user,
@@ -18,7 +18,7 @@ const Overview = ({
   const [email, setEmail] = useState(userEmail);
   const updateUserUrl = `http://localhost:5000/api/users/edit`;
   const logOutReq = useFetch();
-  const updateUserReq = usePut(updateUserUrl);
+  const updateUserReq = usePost(updateUserUrl, "put");
   const [message, setMessage] = useState<string>("");
   const userLogOut = async () => {
     try {

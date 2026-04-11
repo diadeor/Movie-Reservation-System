@@ -4,7 +4,7 @@ import DateAndTime from "../DateAndTime";
 import { type Show, type Movie, useShowContext } from "@/contexts/ShowsContext";
 import InputLabel from "../InputLabel";
 import { Button } from "../ui/button";
-import usePut from "@/hooks/usePut";
+import usePost from "@/hooks/useSendRequest";
 
 const EditShows = ({ showInfo, setCurrentTab }: { showInfo: Show; setCurrentTab: any }) => {
   const { movies } = useShowContext();
@@ -13,7 +13,7 @@ const EditShows = ({ showInfo, setCurrentTab }: { showInfo: Show; setCurrentTab:
   const [price, setPrice] = useState(showInfo.price);
   const [status, setStatus] = useState(showInfo.status);
   const editShowUrl = `http://localhost:5000/api/shows/update/${showInfo.id}`;
-  const editShowReq = usePut(editShowUrl);
+  const editShowReq = usePost(editShowUrl, "put");
   const [message, setMessage] = useState("");
   const [bg, setBg] = useState("bg-green-600");
 

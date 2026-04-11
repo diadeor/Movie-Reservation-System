@@ -3,6 +3,7 @@ import useFetch from "@/hooks/useFetch";
 import { useAuthContext } from "./AuthContext";
 
 export type Movie = {
+  imdbID: string;
   id: string;
   title: string;
   poster: string;
@@ -55,7 +56,7 @@ export const useShowContext: any = () => useContext(ShowContext);
 const ShowProvider = ({ children }: { children: ReactElement }) => {
   const [shows, setShows] = useState<Show[]>();
   const [movies, setMovies] = useState<Movie[]>();
-  // const [users, setUsers] = useState<User[]>();
+  const [users, setUsers] = useState<User[]>();
   const getRequest = useFetch();
   const baseUrl = "http://localhost:5000/api";
   const [loading, setLoading] = useState(true);
@@ -66,41 +67,19 @@ const ShowProvider = ({ children }: { children: ReactElement }) => {
       try {
         const req1 = getRequest(`${baseUrl}/movies`);
         const req2 = getRequest(`${baseUrl}/shows`);
-        // const req3 = getRequest(`${baseUrl}/users`);
 
-        // Parallel request
-        if (user) {
-          const [
-            {
-              data: { movies },
-              error,
-            },
-            {
-              data: { shows },
-              error: err,
-            },
-            // {
-            //   data: { users },
-            //   error: userErr,
-            // },
-          ] = await Promise.all([req1, req2]);
-          if (!error && movies) setMovies(movies);
-          if (!err && shows) setShows(shows);
-          // if (!userErr && users) setUsers(users);
-        } else {
-          const [
-            {
-              data: { movies },
-              error,
-            },
-            {
-              data: { shows },
-              error: err,
-            },
-          ] = await Promise.all([req1, req2]);
-          if (!error && movies) setMovies(movies);
-          if (!err && shows) setShows(shows);
-        }
+        const isAdmin = Boolean(user?.role === "admin");
+        const requests = [req1, req2];
+
+        if (isAdmin) requests.push(getRequest(`${baseUrl}/users`));
+
+        const results = await Promise.all(requests);
+
+        const [movieRes, showRes, userRes] = results;
+
+        if (movieRes?.data?.movies) setMovies(movieRes.data.movies);
+        if (showRes?.data?.shows) setShows(showRes.data.shows);
+        if (userRes?.data?.users) setUsers(userRes.data.users);
       } catch (error) {
         console.log(error);
       } finally {
@@ -111,7 +90,9 @@ const ShowProvider = ({ children }: { children: ReactElement }) => {
   }, [user]);
 
   return (
-    <ShowContext.Provider value={{ movies, shows }}>{!loading && children}</ShowContext.Provider>
+    <ShowContext.Provider value={{ movies, shows, users }}>
+      {!loading && children}
+    </ShowContext.Provider>
   );
 };
 

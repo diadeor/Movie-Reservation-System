@@ -84,9 +84,11 @@ export const getMoviesName = async (req, res, next) => {
 export const addMovie = async (req, res, next) => {
   try {
     const { imdbID, language } = req.body;
+    const { role } = req.user;
     const url = `https://www.omdbapi.com/?apikey=${OMDB_API}&i=${imdbID}`;
     const { data: movie } = await axios.get(url);
 
+    if (role != "admin") throwError("Must be an admin to perform this action.", 401);
     if (movie.Response === "False") throwError(movie.Error, 400);
 
     const alreadyExists = await prisma.movie.findUnique({
@@ -96,8 +98,8 @@ export const addMovie = async (req, res, next) => {
     });
     if (alreadyExists) throwError("Movie already exists in database", 400);
 
-    const runtimeMins = +movie.Runtime.split(" ")[0];
-    const hours = (runtimeMins / 60).toFixed(0);
+    const runtimeMins = parseInt(movie.Runtime);
+    const hours = parseInt(runtimeMins / 60);
     const minutes = runtimeMins % 60;
     const runtime = `${hours} hours ${minutes ? `${minutes} mins` : ""}`;
 
@@ -125,3 +127,23 @@ export const addMovie = async (req, res, next) => {
     next(error);
   }
 };
+
+// export const removeMovie = async (req, res, next) => {
+//   try {
+//     const { id } = req.params;
+//     const { role } = req.user;
+
+//     const isAdmin = role === "admin";
+//     if (!isAdmin) throwError("Must be an admin to perform this action.", 401);
+
+//     const movieExists = await prisma.movie.findUnique({ where: { imdbID: id } });
+//     if (!movieExists) throwError("Movie with that id doesn't exist");
+
+//     const { id: movie_id } = movieExists;
+//     const shows = await prisma.show.findMany({ where: { movie_id } });
+
+//     return res.json({ success: true });
+//   } catch (error) {
+//     next(error);
+//   }
+// };

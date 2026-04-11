@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
-import usePost from "@/hooks/usePost";
+import usePost from "@/hooks/useSendRequest";
 import InputLabel from "@/components/InputLabel";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
@@ -13,13 +13,13 @@ export default function Login() {
   const signUpUrl = "http://localhost:5000/api/auth/sign-up";
   const [tabIsLogin, setTabIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const loginSignUpRequest = tabIsLogin ? usePost(loginUrl) : usePost(signUpUrl);
+  const loginSignUpRequest = usePost(tabIsLogin ? loginUrl : signUpUrl);
   const nav = useNavigate();
   const [error, setError] = useState("");
   // let interval: number;
 
   useEffect(() => {
-    user && nav("/profile");
+    user && nav("/");
   }, [user]);
 
   const handleUser = async (e: any) => {
@@ -41,10 +41,7 @@ export default function Login() {
       setError("");
       const { data, error: err } = await loginSignUpRequest(creds);
       if (data && data.success && !err) {
-        const { role } = data.user;
-
         setUser(data.user);
-        nav(role === "admin" ? "/admin" : "/profile");
       } else if (err) setError(err);
     }
   };

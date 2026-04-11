@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useShowContext, type Movie, type Show, type Seat } from "@/contexts/ShowsContext";
-import { CircleDollarSign, X } from "lucide-react";
+import { CircleDollarSign, X, Frown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import usePost from "@/hooks/usePost";
+import usePost from "@/hooks/useSendRequest";
 import useFetch from "@/hooks/useFetch";
 
 const BookShow = () => {
@@ -89,18 +89,18 @@ const BookShow = () => {
     user && (
       <div className="flex flex-col items-center gap-5 w-full h-full">
         {unavailable.length != 0 && (
-          <div className="z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-orange-900 p-3 rounded-md flex flex-col items-center">
+          <div className="z-10 absolute top-1/2 left-1/2 w-10/12 min-h-40 justify-center max-w-150 transform -translate-x-1/2 -translate-y-1/2 bg-orange-900/60 backdrop-blur-md p-5 rounded-xl flex flex-col items-center">
             <X
               className="absolute top-3 right-3 hover:scale-120 transition-all cursor-pointer"
-              size={`1em`}
+              size={`1.5em`}
               onClick={() => setUnavailable([])}
             />
-            <p className="tracking-wider text-xl font-bold">Sorry,</p>
+            <Frown size={`3em`} color="orange" />
+            <p className="tracking-wider text-xl font-bold">Sorry</p>
             <p className="">{`These seats were just taken:`}</p>
-            <br />
-            <ul className="flex flex-row gap-1">
+            <ul className="flex flex-row gap-1 mt-3">
               {unavailable.map((item) => (
-                <li className="bg-[#ccc] min-w-11 text-center text-black p-0.5 rounded-sm">
+                <li className="bg-[#ccc] border-2 py-1 px-3 min-w-11 text-center text-black p-0.5 rounded-sm">
                   {item}
                 </li>
               ))}

@@ -54,8 +54,6 @@ export const addShow = async (req, res, next) => {
     const { show } = req.body;
     const { date, time, price, status, movie_id } = show;
 
-    console.log({ show });
-
     const movieExists = await prisma.movie.findUnique({ where: { id: movie_id } });
     if (!movieExists) throwError("Movie doesn't exist", 404);
 
@@ -121,7 +119,7 @@ export const updateShow = async (req, res, next) => {
     const providedTimeStamp = new Date(`${date}T${time}`);
     const currentTimeStamp = new Date();
 
-    const showExists = await prisma.show.findUnique({ where: { id: +id } });
+    const showExists = await prisma.show.findUnique({ where: { id } });
     if (!showExists) throwError("Show does not exist", 404);
 
     const { date: showDate, time: showTime, price: showPrice, status: showStatus } = showExists;
@@ -138,7 +136,7 @@ export const updateShow = async (req, res, next) => {
     const { movie_id } = showExists;
 
     const updatedShow = await prisma.show.update({
-      where: { id: +id },
+      where: { id },
       data: statusChangeOnly ? { status } : { date, time, price: +price, status },
     });
     const now = new Date();

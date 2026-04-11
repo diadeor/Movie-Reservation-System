@@ -7,14 +7,12 @@ import throwError from "../config/err.js";
 export const signIn = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) throwError("Email & Password is required...", 400);
 
     const userExists = await prisma.user.findUnique({ where: { email } });
     if (!userExists) throwError("Invalid email or password", 400);
 
     const passValid = await bcrypt.compare(password, userExists.password);
     const { id, role, name } = userExists;
-    console.log(userExists);
 
     if (passValid) {
       const token = jwt.sign({ id, role }, JWT_SECRET, { expiresIn: JWT_EXPIRE });
@@ -39,9 +37,6 @@ export const signIn = async (req, res, next) => {
 export const signUp = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
-    console.log(req.body);
-    if (!name || !email || !password)
-      throwError("Required fields are not provided. [name, email, password] is required", 400);
 
     const userExists = await prisma.user.findUnique({ where: { email } });
     if (userExists) throwError("Email already exists", 400);

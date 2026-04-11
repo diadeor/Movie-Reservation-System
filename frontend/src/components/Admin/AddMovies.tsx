@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import useFetch from "@/hooks/useFetch";
 import { useRef, useState } from "react";
-import usePost from "@/hooks/usePost";
+import usePost from "@/hooks/useSendRequest";
 
 type MovieFetch = {
   Title: string;

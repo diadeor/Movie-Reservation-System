@@ -2,7 +2,7 @@ import InputLabel from "@/components/InputLabel";
 import { Button } from "@/components/ui/button";
 import { EyeOff, Eye } from "lucide-react";
 import { useState } from "react";
-import usePost from "@/hooks/usePost";
+import usePost from "@/hooks/useSendRequest";
 
 const Password = () => {
   const [showPassword, setShowPassword] = useState({
