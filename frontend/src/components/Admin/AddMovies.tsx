@@ -35,7 +35,7 @@ type MovieFetch = {
 const AddMovie = () => {
   const apiKey = "f9c86c81";
   const input = useRef<HTMLInputElement>(null);
-  const searchMovies = useFetch(false);
+  const searchMovies = useFetch("get", false);
   const [movieList, setMovieList] = useState<MovieFetch[]>();
   const [selected, setSelected] = useState<MovieFetch>();
   const addMovieUrl = `http://localhost:5000/api/movies/add`;

@@ -16,8 +16,12 @@ const validate = (schema) => (req, res, next) => {
       Object.assign(req.query, validated.params);
     }
     next();
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({
+      success: false,
+      error: err.issues[0].message,
+    });
   }
 };
 

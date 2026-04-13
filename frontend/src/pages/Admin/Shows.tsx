@@ -6,9 +6,11 @@ const Shows = ({ setTab, edit }: { setTab?: any; edit: any }) => {
   return (
     shows &&
     shows.map((show: Show, index: number) => {
-      const { movie_id, status, date, time, price } = show;
+      const { movie_id, status, date, price } = show;
+      const dateOnly = new Date(date).toLocaleDateString("en-ca");
+      const timeOnly = new Date(date).toLocaleTimeString("en-US");
       const filled = (((50 - 20) / 50) * 100).toFixed(0);
-      const movie = movies.find((movie: Movie) => movie.id === movie_id);
+      const movie = movies.find((movie: Movie) => movie.imdbID === movie_id);
       const { title, poster } = movie;
       const isUpcoming = status === "upcoming";
       const statusBackground =
@@ -34,11 +36,11 @@ const Shows = ({ setTab, edit }: { setTab?: any; edit: any }) => {
             <div className="two flex flex-row gap-2 w-full font-jetbrains">
               <p className="direct flex flex-col bg-orange-950 p-2 grow  rounded-md flex-1">
                 <span className="text-yellow-500 ">Date</span>{" "}
-                <span className="font-bold text-nowrap">{date}</span>
+                <span className="font-bold text-nowrap">{dateOnly}</span>
               </p>
               <p className="direct flex flex-col bg-orange-950 p-2 grow rounded-md flex-1">
                 <span className="text-yellow-500">Time</span>{" "}
-                <span className="font-bold">{time.slice(0, 5)}</span>
+                <span className="font-bold">{timeOnly}</span>
               </p>
               <p className="direct flex flex-col bg-orange-950 p-2 grow rounded-md flex-1">
                 <span className="text-yellow-500">Price</span>{" "}

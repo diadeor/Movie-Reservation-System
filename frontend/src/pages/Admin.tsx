@@ -39,8 +39,7 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState("users");
   const [editInfo, setEditInfo] = useState<Show>();
   const { user } = useAuthContext();
-  const { name, role } = user;
-  const isAdmin = user ? (role === "admin" ? true : false) : false;
+  const isAdmin = user ? (user?.role === "admin" ? true : false) : false;
   const nav = useNavigate();
 
   useEffect(() => {
@@ -60,7 +59,7 @@ const Admin = () => {
         <div className="flex flex-col items-center admin-container w-full h-[calc(100svh-160px)] font-poppins max-w-6xl text-orange-200">
           <div className="top-row w-full flex flex-row items-center justify-between mb-4 px-2">
             <p className="text-2xl font-bold bg-clip-text bg-linear-to-r text-transparent from-red-500 to-yellow-500">
-              Howdy, {name.split(" ")[0]}
+              Howdy, {user.name.split(" ")[0]}
             </p>
             <Link to={`/profile`}>Go to Profile {`>`}</Link>
           </div>

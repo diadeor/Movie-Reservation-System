@@ -12,14 +12,14 @@ const Home = () => {
 
   useEffect(() => {
     const tempShows = shows.filter((item: Show) => {
-      const showDateTimeStamp = new Date(item.date).getTime();
-      const selectedDateTimeStamp = new Date(selectedDate).getTime();
-      const showExists = showDateTimeStamp === selectedDateTimeStamp;
-      // console.log(today);
+      const showDate = new Date(item.date).toLocaleDateString("en-ca");
+      const showExists = showDate === selectedDate;
       return showExists ? true : false;
     });
-    const movieIdOnly = tempShows.map((item: Show) => item.movie_id);
-    const tempMovies = movies.filter((item: Movie) => movieIdOnly.includes(item.id));
+    // const movieIdOnly = tempShows.map((item: Show) => item.movie_id);
+    const tempMovies = movies.filter((item: Movie) =>
+      tempShows.find((temp: Show) => temp.movie_id === item.imdbID),
+    );
 
     setFilteredMovies(tempMovies);
   }, [selectedDate]);
@@ -36,9 +36,9 @@ const Home = () => {
         <ul className="shows grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 font-poppins w-full">
           {filteredMovies &&
             filteredMovies.map((item: Movie, index: number) => {
-              const { id, title, runtime, poster } = item;
+              const { title, runtime, poster, imdbID } = item;
               return (
-                <Link to={`/movie/${id}`} key={index}>
+                <Link to={`/movie/${imdbID}`} key={index}>
                   <li className="movie flex flex-col items-center">
                     <img src={poster} alt="" className=" w-full rounded- rounded-md" />
                     <p className="font-semibold mt-2 uppercase">{title}</p>

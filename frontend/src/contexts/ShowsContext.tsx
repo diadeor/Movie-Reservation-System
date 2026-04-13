@@ -19,8 +19,7 @@ export type Movie = {
 };
 export type Show = {
   id: string;
-  date: string;
-  time: string;
+  date: Date;
   movie_id: string;
   price: number;
   status: "upcoming" | "expired" | "cancelled";

@@ -9,44 +9,34 @@ const ShowMovie = () => {
   const [movie, setMovie] = useState<Movie>();
   const [selectedDate, setSelectedDate] = useState(dates[0].value);
   const [filteredShows, setFilteredShows] = useState<Show[]>();
-  // console.log(shows);
 
   useEffect(() => {
-    movies && setMovie(movies.find((item: Movie) => item.id === id));
+    movies && setMovie(movies.find((item: Movie) => item.imdbID === id));
     const movieSpecificShows: Show[] = shows.filter((show: Show) => show.movie_id === id);
-    for (let x of movieSpecificShows) {
-      const movieTime = new Date(`${x.date}T${x.time}`);
+    for (let show of movieSpecificShows) {
+      const { date } = show;
+      const movieTime = new Date(date);
       const currentTime = new Date();
       const isMovieValid = movieTime > currentTime;
       if (isMovieValid) {
         const validDate = movieTime.toLocaleDateString("en-ca");
         setSelectedDate(validDate);
       }
+      break;
     }
-  }, [movies]);
+  }, []);
 
   const details = movie && [
-    {
-      title: "Director",
-      value: movie.director,
-    },
-    {
-      title: "Actors",
-      value: movie.cast,
-    },
-    {
-      title: "Released",
-      value: movie.released,
-    },
-    {
-      title: "Runtime",
-      value: movie.runtime,
-    },
+    { title: "Director", value: movie.director },
+    { title: "Actors", value: movie.cast },
+    { title: "Released", value: movie.released },
+    { title: "Runtime", value: movie.runtime },
   ];
 
   useEffect(() => {
     const showsTemp = shows?.filter(
-      (show: Show) => show.date === selectedDate && show.movie_id === id,
+      (show: Show) =>
+        new Date(show.date).toLocaleDateString("en-ca") === selectedDate && show.movie_id === id,
     );
     setFilteredShows(showsTemp);
   }, [selectedDate, shows]);
@@ -85,18 +75,18 @@ const ShowMovie = () => {
         <ul className="time flex flex-row">
           {filteredShows &&
             filteredShows.map((show, index) => {
-              const time = show.time.slice(0, 2);
-              const am = +time / 12 > 1 ? "pm" : "am";
-              const updatedTime = `${+time % 12}:${show.time.slice(3, 5)}`;
-
+              const { date } = show;
+              const time = new Date(date).toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
               return (
                 <Link to={`/shows/${show.id}`} key={index}>
                   <li
                     key={index}
                     className="font-jetbrains uppercase bg-orange-900 p-10 font-bold text-2xl rounded-md backdrop-blur-sm"
                   >
-                    {updatedTime}&nbsp;
-                    {am}
+                    {time}
                   </li>
                 </Link>
               );

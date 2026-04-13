@@ -12,7 +12,7 @@ function DateAndTime({
   setTime,
   theme = "white",
 }: {
-  date: Date;
+  date: string;
   setDate: any;
   time: string;
   setTime: any;
@@ -47,17 +47,17 @@ function DateAndTime({
               id="date-picker"
               className={`${current.background} ${current.border} w-full justify-between tracking-wider`}
             >
-              {date ? date.toLocaleDateString("en-ca") : "Select date"}
+              {date ?? "Select date"}
               <ChevronDownIcon />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto overflow-hidden p-0" align="start">
             <Calendar
               mode="single"
-              selected={date}
+              selected={new Date(date)}
               captionLayout="label"
               onSelect={(selectedDate) => {
-                setDate(selectedDate);
+                setDate(selectedDate?.toLocaleDateString("en-ca"));
                 setOpen(false);
               }}
             />
