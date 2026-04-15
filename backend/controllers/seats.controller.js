@@ -26,10 +26,6 @@ export const lockSeats = async (req, res, next) => {
   try {
     const { id } = req.user;
     const { show, seats } = req.body;
-    if (!seats || !show) throwError("Show & seat info is required");
-    if (!Array.isArray(seats)) throwError("Seats must be an array !!");
-
-    console.log(req.body);
 
     const showExists = await prisma.show.findUnique({ where: { id: show } });
     if (!showExists) throwError("A show with that id doesn't exist.");

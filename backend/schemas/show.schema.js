@@ -23,3 +23,13 @@ export const editShowSchema = z.object({
     status: z.enum(["upcoming", "cancelled", "expired"]),
   }),
 });
+
+export const addMovieSchema = z.object({
+  body: z.object({
+    imdbID: z
+      .string({ error: "IMDB ID is required." })
+      .trim()
+      .regex(/tt[0-9]+/, { error: "Invalid IMDB id" }),
+    language: z.enum(["english", "hindi", "nepali"]),
+  }),
+});

@@ -96,19 +96,18 @@ export const changePass = async (req, res, next) => {
   try {
     const { id } = req.user;
     const { current, newPassword } = req.body;
-    if (!current || !newPassword) throwError("Current & New Password Required.");
-    const user = await prisma.user.findUnique({ where: { id: +id } });
+
+    const user = await prisma.user.findUnique({ where: { id } });
 
     const { password } = user;
     const isValid = await bcrypt.compare(current, password);
     if (!isValid) throwError("Invalid Password !!");
 
-    console.log(req.body);
     const salt = await bcrypt.genSalt(12);
     const passHash = await bcrypt.hash(newPassword, salt);
 
     const updatedUser = await prisma.user.update({
-      where: { id: +id },
+      where: { id },
       data: { password: passHash },
       select: { id: true, role: true, email: true, name: true },
     });

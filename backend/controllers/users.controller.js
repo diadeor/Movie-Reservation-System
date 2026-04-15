@@ -86,7 +86,7 @@ export const editUser = async (req, res, next) => {
       include: { password: false, created_at: false },
     });
 
-    res.json({
+    return res.json({
       success: true,
       user: updatedUser,
       message: bothChanges

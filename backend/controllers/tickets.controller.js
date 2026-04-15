@@ -28,11 +28,11 @@ export const getTicketsByUser = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const userExists = await prisma.user.findUnique({ where: { id: +id } });
+    const userExists = await prisma.user.findUnique({ where: { id } });
     if (!userExists) throwError("User does not exist", 400);
 
     const tickets = await prisma.ticket.findMany({
-      where: { user: +id },
+      where: { user_id: id },
       orderBy: { createdAt: "desc" },
     });
 
@@ -48,7 +48,7 @@ export const getTicketsByUser = async (req, res, next) => {
 export const getTicket = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const ticket = await prisma.ticket.findUnique({ where: { id: +id } });
+    const ticket = await prisma.ticket.findUnique({ where: { id } });
     if (!ticket) throwError("No ticket with such id", 404);
 
     return res.json({
@@ -68,27 +68,22 @@ export const createTicket = async (req, res, next) => {
     const showExists = await prisma.show.findUnique({ where: { id: show } });
     if (!showExists) throwError("Show does not exist", 404);
 
+    const { price: seatPrice } = showExists;
     const ticketObj = {
-      show,
-      user: +id,
-      seats,
-      number_of_seats: seats.length,
-      seat_price: showExists.price,
+      show_id: show,
+      user_id: id,
+      total_amount: seats.length * seatPrice,
+      status: "paid",
     };
-    const available_seats = showExists.available_seats.filter((item) => !seats.includes(item));
 
-    const [shows, tickets] = await prisma.$transaction([
-      prisma.show.update({
-        where: { id: show },
-        data: {
-          reserved_seats: [...showExists.reserved_seats, ...seats],
-          available_seats,
-        },
+    const [_, tickets] = await prisma.$transaction([
+      prisma.seat.updateMany({
+        where: { seat_number: { in: seats } },
+        data: { status: "locked" },
       }),
       prisma.ticket.create({ data: ticketObj }),
     ]);
 
-    console.log(shows, tickets);
     return res.json({
       success: true,
       tickets,
