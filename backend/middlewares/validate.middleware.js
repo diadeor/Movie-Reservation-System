@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 const validate = (schema) => (req, res, next) => {
   try {
     const validated = schema.parse({

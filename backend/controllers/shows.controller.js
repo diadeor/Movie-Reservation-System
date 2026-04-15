@@ -107,44 +107,39 @@ export const addShow = async (req, res, next) => {
 
 export const updateShow = async (req, res, next) => {
   try {
-    const { date, time, price, status } = req.body;
+    const { date, price, status } = req.body;
     const { id } = req.params;
 
-    const providedTimeStamp = new Date(`${date}T${time}`);
-    const currentTimeStamp = new Date();
+    const providedTimeStamp = new Date(date).getTime();
+    const currentTimeStamp = new Date().getTime();
+
+    const isDateValid = providedTimeStamp > currentTimeStamp;
 
     const showExists = await prisma.show.findUnique({ where: { id } });
     if (!showExists) throwError("Show does not exist", 404);
 
-    const { date: showDate, time: showTime, price: showPrice, status: showStatus } = showExists;
-    const noChangesMade = date === showDate && time === showTime && price === showPrice;
-    const statusChanged = showStatus === status ? false : true;
-    const statusChangeOnly = noChangesMade ? true : false;
+    const { date: showDate, price: showPrice, status: showStatus, movie_id } = showExists;
 
-    !statusChanged && noChangesMade && throwError("No changes made");
+    const showTimeStamp = new Date(showDate).getTime();
 
-    if (statusChangeOnly && status === "upcoming") throwError("Invalid time", 400);
-    if (!statusChangeOnly && currentTimeStamp > providedTimeStamp) {
-      throwError("Invalid time", 400);
-    }
-    const { movie_id } = showExists;
+    const noChangesMade = showTimeStamp === providedTimeStamp && price === showPrice;
+    const statusChange = status !== showStatus ? true : false;
+
+    !statusChange && noChangesMade && throwError("No changes made");
+
+    if (!isDateValid && status === "upcoming") throwError("Invalid date provided", 400);
 
     const updatedShow = await prisma.show.update({
       where: { id },
-      data: statusChangeOnly ? { status } : { date, time, price: +price, status },
+      data: statusChange && noChangesMade ? { status } : { date, price, status },
     });
     const now = new Date();
-    const currentDateStr = now.toLocaleDateString("en-CA");
-    const currentTimeStr = now.toLocaleTimeString("en-GB", { hour12: false });
 
     await prisma.show.updateMany({
       where: {
         status: "upcoming",
         movie_id,
-        OR: [
-          { date: { lt: currentDateStr } },
-          { date: { equals: currentDateStr }, time: { lt: currentTimeStr } },
-        ],
+        date: { lt: now },
       },
       data: { status: "expired" },
     });
@@ -154,11 +149,11 @@ export const updateShow = async (req, res, next) => {
     });
 
     !shows.length &&
-      (await prisma.movie.update({ where: { id: movie_id }, data: { status: "inactive" } }));
+      (await prisma.movie.update({ where: { imdbID: movie_id }, data: { status: "inactive" } }));
 
     return res.json({
       success: true,
-      message: `Show ${statusChangeOnly ? "status" : "information"} updated.`,
+      message: `Show ${statusChange && noChangesMade ? "status" : "information"} updated.`,
       show: { ...updatedShow },
     });
   } catch (error) {

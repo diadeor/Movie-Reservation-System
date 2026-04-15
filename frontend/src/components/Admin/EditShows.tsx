@@ -7,28 +7,27 @@ import { Button } from "../ui/button";
 import usePost from "@/hooks/useSendRequest";
 
 const EditShows = ({ showInfo, setCurrentTab }: { showInfo: Show; setCurrentTab: any }) => {
+  const { date: showDate, price: showPrice, status: showStatus, id: showID, movie_id } = showInfo;
   const { movies } = useShowContext();
-  const [date, setDate] = useState(new Date(showInfo.date));
-  const [time, setTime] = useState(showInfo.time);
-  const [price, setPrice] = useState(showInfo.price);
-  const [status, setStatus] = useState(showInfo.status);
-  const editShowUrl = `http://localhost:5000/api/shows/update/${showInfo.id}`;
+  const showTime = new Date(showDate);
+  const [date, setDate] = useState(showTime.toLocaleDateString("en-ca"));
+  const [time, setTime] = useState(showTime.toLocaleTimeString("en-GB"));
+  const [price, setPrice] = useState(showPrice);
+  const [status, setStatus] = useState<string>(showStatus);
+  const editShowUrl = `http://localhost:5000/api/shows/update/${showID}`;
   const editShowReq = usePost(editShowUrl, "put");
   const [message, setMessage] = useState("");
   const [bg, setBg] = useState("bg-green-600");
 
-  const movie: Movie = movies.find((movie: Movie) => showInfo?.movie_id === movie.id);
+  const movie: Movie = movies.find((movie: Movie) => movie_id === movie.imdbID);
 
   const handlePriceChange = (e: any) => setPrice(e.target.value);
-  const showObj = {
-    date: date.toLocaleDateString("en-ca"),
-    time,
-    price,
-    status,
-  };
+  const dateISO = new Date(`${date}T${time ? time : "00:00:00"}`).toISOString();
+  const isDateValid = new Date() < new Date(dateISO);
 
   const editShow = async () => {
     try {
+      const showObj = { date: dateISO, price, status };
       const { data, error } = await editShowReq(showObj);
       console.log(data);
       if (error) {
@@ -101,6 +100,7 @@ const EditShows = ({ showInfo, setCurrentTab }: { showInfo: Show; setCurrentTab:
           className={`h-11  w-full bg-orange-700 text-white font-bold text-md hover:bg-orange-500 shadow-lg shadow-amber-600/50 outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-orange-900 focus:ring-orange-500 
             }`}
           onClick={editShow}
+          disabled={(status === "upcoming" && !isDateValid) || !price ? true : false}
         >
           Save
         </Button>

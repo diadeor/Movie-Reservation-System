@@ -13,9 +13,11 @@ const BookShow = () => {
   const { movies, shows } = useShowContext();
   const nav = useNavigate();
   const show: Show = shows.find((show: Show) => show.id === id);
-  const movie = movies.find((movie: Movie) => movie.id === show.movie_id);
-  const time = Number(show.time.slice(0, 2)) % 12;
-  const amOrPm = Number(show.time.slice(0, 2)) > 12 ? "PM" : "AM";
+  const movie = movies.find((movie: Movie) => movie.imdbID === show.movie_id);
+  const movieTime = new Date(show.date).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   const [seats, setSeats] = useState<Seat[]>([]);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
@@ -117,7 +119,7 @@ const BookShow = () => {
               <p className="text-xl">{movie.title}</p>
               <div className="flex flex-row gap-1">
                 <p className={partitionClass}>{movie.runtime}</p>
-                <p className={partitionClass}>{`${time}${show.time.slice(2)} ${amOrPm}`}</p>
+                <p className={partitionClass}>{movieTime}</p>
               </div>
               <p className={`${partitionClass} `}>
                 {show?.date &&
