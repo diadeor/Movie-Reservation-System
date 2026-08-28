@@ -78,6 +78,8 @@ model Ticket {
   status          ticket_status @default(unpaid)
   createdAt       DateTime      @default(now()) @db.Timestamptz(3)
   total_amount    Int
+  pidx            String?       @unique
+  tx_id           String?       @unique
 
   Show            Show         @relation(fields: [show_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   User            User         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)

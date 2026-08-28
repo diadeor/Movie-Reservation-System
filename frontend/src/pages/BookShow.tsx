@@ -31,6 +31,9 @@ const BookShow = () => {
   const seatLockUrl = "http://localhost:5000/api/seats/lock";
   const seatLockReq = usePost(seatLockUrl);
 
+  const khaltiInitiate = "http://localhost:5000/api/khalti/initiate";
+  const khaltiReq = usePost(khaltiInitiate);
+
   const partitionClass =
     "bg-orange-950 p-1 px-3 flex-1 rounded-sm justify-center items-center flex";
 
@@ -59,6 +62,7 @@ const BookShow = () => {
         const { seats }: { seats: Seat[] } = data;
         setSeats(seats);
         const seat: Seat = seats.filter((seat) => seat.seat_number === seat_num)[0];
+
         if (seat.status != "available")
           setSelectedSeats((prev) => prev.filter((item) => item != seat_num));
       }
@@ -71,6 +75,7 @@ const BookShow = () => {
     try {
       if (!show && !movie) return;
       const { data, error } = await seatLockReq({ seats: selectedSeats, show: show.id });
+      console.log(data);
       if (!error) {
         const { unavailable, updatedSeats } = data;
         if (unavailable) {
@@ -78,8 +83,23 @@ const BookShow = () => {
           setSelectedSeats((prev) => prev.filter((item) => !unavailable.includes(item)));
           setSeats(updatedSeats);
         } else {
-          setSelectedSeats([]);
           setSeats(updatedSeats);
+          let totalPrice = selectedSeats.length * show.price;
+          console.log(totalPrice);
+          try {
+            const { data } = await khaltiReq({
+              amt: totalPrice,
+              show: id,
+              seats: selectedSeats,
+            });
+            console.log(data);
+            if (data.success) {
+              window.location.href = data.payment_url;
+            }
+          } catch (error) {
+            console.error("Payment Error:", error);
+            alert("Failed to initiate payment. Please try again.");
+          }
         }
       }
     } catch (error) {
@@ -182,7 +202,7 @@ const BookShow = () => {
               Rs.{show.price * selectedSeats.length}
             </p>
             <Button variant={"secondary"} className=" border-2" onClick={handlePayNow}>
-              Pay Now <CircleDollarSign />
+              Pay with Khalti <CircleDollarSign />
             </Button>
           </div>
         )}

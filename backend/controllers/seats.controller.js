@@ -30,7 +30,7 @@ export const lockSeats = async (req, res, next) => {
     const showExists = await prisma.show.findUnique({ where: { id: show } });
     if (!showExists) throwError("A show with that id doesn't exist.");
 
-    const lockFor = new Date(Date.now() + 15 * 60 * 1000); // Lock for 15 mins
+    const lockFor = new Date(Date.now() + 30 * 60 * 1000); // Lock for 30 mins
 
     const findMatches = await prisma.seat.findMany({
       where: {
@@ -76,3 +76,4 @@ export const lockSeats = async (req, res, next) => {
     next(error);
   }
 };
+``;

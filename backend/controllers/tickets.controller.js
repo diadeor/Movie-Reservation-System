@@ -60,6 +60,50 @@ export const getTicket = async (req, res, next) => {
   }
 };
 
+export const generateTicket = async (show, user, amt, seats) => {
+  try {
+    const ticket = await prisma.$transaction(async (tx) => {
+      const newTicket = await tx.ticket.create({
+        data: {
+          show_id: show,
+          user_id: user,
+          status: "unpaid",
+          total_amount: amt,
+        },
+      });
+
+      await tx.seat.updateMany({
+        where: { show_id: show, locked_by: user, seat_number: { in: seats } },
+        data: {
+          ticket_id: newTicket.id,
+        },
+      });
+
+      return newTicket;
+    });
+    return ticket;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const ticketVerified = async (ticket_id, tx_id) => {
+  try {
+    await prisma.$transaction([
+      prisma.ticket.update({
+        where: { id: ticket_id },
+        data: { status: "paid", tx_id },
+      }),
+      prisma.seat.updateMany({
+        where: { ticket_id },
+        data: { status: "booked" },
+      }),
+    ]);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const createTicket = async (req, res, next) => {
   try {
     const { id } = req.user;

@@ -11,6 +11,7 @@ import ErrorMiddleware from "./middlewares/error.middleware.js";
 import authorizeUser from "./middlewares/auth.middleware.js";
 import ticketRouter from "./routes/tickets.route.js";
 import seatRouter from "./routes/seats.routes.js";
+import khaltiRouter from "./routes/khalti.route.js";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(
       "https://web-chat-virid-two.vercel.app",
       "http://localhost:5173",
       "http://192.168.1.103:5173",
+      "http://localhost:3000",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
@@ -42,6 +44,7 @@ app.use("/api/shows", showRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/tickets", authorizeUser, ticketRouter);
 app.use("/api/seats", authorizeUser, seatRouter);
+app.use("/api/khalti", khaltiRouter);
 
 // Error middleware
 app.use(ErrorMiddleware);

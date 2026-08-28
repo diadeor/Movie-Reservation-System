@@ -7,6 +7,7 @@ import ShowMovie from "./pages/ShowMovie";
 import BookShow from "./pages/BookShow";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import PaymentVerify from "./pages/PaymentVerify";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/payment/verify" element={<PaymentVerify />} />
           </Routes>
         </div>
         <Footer />
